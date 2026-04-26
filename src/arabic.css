@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "arabic-custom";
+  src: url("/fonts/TintaArabic.otf"); /* tanpa format() biar aman */
+}
+
+.arabic-text {
+  font-family: "arabic-custom", serif; /* ada fallback */
+  font-size: 28px;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.9;
+}
