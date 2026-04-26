@@ -4,37 +4,56 @@
   box-sizing: border-box;
 }
 
-.app-layout {
+body {
+  font-family: Arial, sans-serif;
+  background: #f8fafc;
+}
+
+/* Layout */
+.layout {
   display: flex;
+  min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
   width: 260px;
-  height: 100vh;
   background: #0f172a;
   color: white;
   padding: 20px;
   position: fixed;
-  left: 0;
   top: 0;
-  transition: 0.3s;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-.sidebar.hide {
-  left: -260px;
-}
-
-.sidebar.show {
   left: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
-.logo {
+/* Brand */
+.brand {
   margin-bottom: 20px;
 }
 
+.brand h2 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.brand p {
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* Search */
+.search-box {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  outline: none;
+}
+
+/* Menu */
 .menu {
   list-style: none;
 }
@@ -44,33 +63,68 @@
 }
 
 .menu a {
-  color: white;
+  color: #e2e8f0;
   text-decoration: none;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.menu a:hover {
+  background: #1e293b;
+}
+
+/* Footer Sidebar */
+.sidebar-footer {
+  margin-top: 40px;
+  color: #94a3b8;
+  font-size: 13px;
 }
 
 /* Konten */
-.main-content {
-  width: 100%;
-  padding: 20px;
-  transition: 0.3s;
-}
-
-.main-content.shift {
+.content {
   margin-left: 260px;
+  padding: 20px;
+  width: calc(100% - 260px);
 }
 
-/* Tombol */
-.menu-btn {
-  font-size: 24px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  margin-bottom: 20px;
+/* Ayat */
+.arabic-text {
+  direction: rtl;
+  text-align: right;
+  font-size: 28px;
+  line-height: 2;
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .main-content.shift {
-    margin-left: 0;
+  .layout {
+    flex-direction: column;
   }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .search-box {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  outline: none;
+  font-size: 14px;
+  background: #1e293b;
+  color: white;
+}
+
+.search-box::placeholder {
+  color: #94a3b8;
+}
 }
