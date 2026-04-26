@@ -2,37 +2,67 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Dashboard() {
-  const [surat, setSurat] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch("https://equran.id/api/v2/surat")
-      .then(res => res.json())
-      .then(data => setSurat(data.data));
+      .then((res) => res.json())
+      .then((result) => setData(result.data));
   }, []);
+
+  const tambahFavorit = (surat) => {
+    let favorit = JSON.parse(localStorage.getItem("favorit")) || [];
+
+    const cek = favorit.find((item) => item.nomor === surat.nomor);
+
+    if (!cek) {
+      favorit.push(surat);
+      localStorage.setItem("favorit", JSON.stringify(favorit));
+      alert("Berhasil ditambahkan ke favorit ⭐");
+    } else {
+      alert("Sudah ada di favorit 😎");
+    }
+  };
 
   return (
     <div>
-      <h3 className="mb-4">📚 Daftar Surat</h3>
+      <h2>📚 Daftar Surat</h2>
 
-      <div className="row">
-        {surat.map(item => (
-          <div className="col-md-4 mb-3" key={item.nomor}>
-            <Link to={`/surat/${item.nomor}`} style={{ textDecoration: "none" }}>
-              
-              <div className="card shadow-sm card-hover">
-                <div className="card-body">
-                  <h5>{item.namaLatin}</h5>
-                  <p className="mb-1">{item.arti}</p>
-                  <small className="text-muted">
-                    {item.jumlahAyat} ayat • {item.tempatTurun}
-                  </small>
-                </div>
-              </div>
+      {data.map((surat) => (
+        <div
+          key={surat.nomor}
+          style={{
+            background: "white",
+            padding: "15px",
+            borderRadius: "10px",
+            marginBottom: "10px"
+          }}
+        >
+          <Link
+            to={`/surat/${surat.nomor}`}
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <h3>
+              {surat.nomor}. {surat.namaLatin}
+            </h3>
+            <p>{surat.arti}</p>
+          </Link>
 
-            </Link>
-          </div>
-        ))}
-      </div>
+          <button
+            onClick={() => tambahFavorit(surat)}
+            style={{
+              marginTop: "10px",
+              padding: "8px 12px",
+              border: "none",
+              borderRadius: "8px",
+              background: "#facc15",
+              cursor: "pointer"
+            }}
+          >
+            ⭐ Favorit
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
