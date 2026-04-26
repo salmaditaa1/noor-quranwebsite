@@ -1,13 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import DetailSurat from "./pages/DetailSurat";
 
 function App() {
   return (
-    <BrowserRouter basename="/alquranweb"> {/* 🔥 WAJIB */}
+    <HashRouter>
       <div>
-        
         <Navbar />
 
         <div
@@ -23,9 +22,8 @@ function App() {
             <Route path="/surat/:nomor" element={<DetailSurat />} />
           </Routes>
         </div>
-
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
