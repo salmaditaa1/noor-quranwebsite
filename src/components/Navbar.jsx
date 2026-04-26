@@ -1,49 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Navbar() {
-  const [surat, setSurat] = useState([]);
-  const location = useLocation();
-
-  useEffect(() => {
-    fetch("https://equran.id/api/v2/surat")
-      .then(res => res.json())
-      .then(data => setSurat(data.data));
-  }, []);
-
+function Navbar({ open, setOpen }) {
   return (
-    <div className="sidebar">
-      <h4 className="logo">📖 Qur'an Web</h4>
+    <div className={`sidebar ${open ? "show" : "hide"}`}>
+      <h3 className="logo">📖 Qur'an App</h3>
 
       <ul className="menu">
-        {/* Dashboard */}
         <li>
-          <Link 
-            to="/" 
-            className={location.pathname === "/" ? "active" : ""}
-          >
-            <i className="bi bi-house-door"></i> Dashboard
+          <Link to="/" onClick={() => setOpen(false)}>
+            Dashboard
           </Link>
         </li>
-
-        {/* Title */}
-        <li className="menu-title">📂 Surat</li>
-
-        {/* List Surat */}
-        {surat.map((item) => (
-          <li key={item.nomor}>
-            <Link
-              to={`/surat/${item.nomor}`}
-              className={
-                location.pathname === `/surat/${item.nomor}`
-                  ? "active"
-                  : ""
-              }
-            >
-              {item.nomor}. {item.namaLatin}
-            </Link>
-          </li>
-        ))}
       </ul>
     </div>
   );

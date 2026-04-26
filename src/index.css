@@ -4,97 +4,73 @@
   box-sizing: border-box;
 }
 
-/* Layout utama */
 .app-layout {
   display: flex;
-  min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
   width: 260px;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #0f172a, #1e293b);
+  height: 100vh;
+  background: #0f172a;
   color: white;
   padding: 20px;
   position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
+  transition: 0.3s;
   overflow-y: auto;
+  z-index: 1000;
 }
 
-/* Logo */
+.sidebar.hide {
+  left: -260px;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
 .logo {
-  text-align: center;
   margin-bottom: 20px;
 }
 
-/* Menu */
 .menu {
   list-style: none;
-  padding: 0;
 }
 
 .menu li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.menu li a {
-  display: block;
-  padding: 10px 12px;
-  color: #cbd5e1;
+.menu a {
+  color: white;
   text-decoration: none;
-  border-radius: 8px;
+}
+
+/* Konten */
+.main-content {
+  width: 100%;
+  padding: 20px;
   transition: 0.3s;
 }
 
-.menu li a:hover {
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-.menu li a.active {
-  background: #3b82f6;
-  color: white;
-}
-
-/* Konten utama */
-.main-content {
+.main-content.shift {
   margin-left: 260px;
-  width: calc(100% - 260px);
-  padding: 20px;
-  background: #f8fafc;
-  min-height: 100vh;
 }
 
-/* Ayat Arab */
-.arabic-text {
-  font-size: 28px;
-  line-height: 2;
-  text-align: right;
-  direction: rtl;
-  word-break: break-word;
+/* Tombol */
+.menu-btn {
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-bottom: 20px;
 }
 
-/* RESPONSIVE MOBILE */
+/* Mobile */
 @media (max-width: 768px) {
-  .app-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    position: relative;
-    width: 100%;
-    min-height: auto;
-  }
-
-  .main-content {
+  .main-content.shift {
     margin-left: 0;
-    width: 100%;
-    padding: 15px;
-  }
-
-  .arabic-text {
-    font-size: 24px;
   }
 }
