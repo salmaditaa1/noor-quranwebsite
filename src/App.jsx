@@ -5,16 +5,14 @@ import DetailSurat from "./pages/DetailSurat";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/alquranweb"> {/* 🔥 WAJIB */}
       <div>
         
-        {/* SIDEBAR (FIXED) */}
         <Navbar />
 
-        {/* CONTENT */}
         <div
           style={{
-            marginLeft: "260px",   // 🔥 wajib (sesuai lebar navbar)
+            marginLeft: "260px",
             padding: "20px",
             backgroundColor: "#f4f6f9",
             minHeight: "100vh"
