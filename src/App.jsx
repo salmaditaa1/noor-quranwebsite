@@ -6,17 +6,10 @@ import DetailSurat from "./pages/DetailSurat";
 function App() {
   return (
     <HashRouter>
-      <div>
+      <div className="app-layout">
         <Navbar />
 
-        <div
-          style={{
-            marginLeft: "260px",
-            padding: "20px",
-            backgroundColor: "#f4f6f9",
-            minHeight: "100vh"
-          }}
-        >
+        <div className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/surat/:nomor" element={<DetailSurat />} />
