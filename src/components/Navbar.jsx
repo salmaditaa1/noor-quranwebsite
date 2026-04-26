@@ -8,22 +8,19 @@ function Navbar() {
         <p>Baca Al-Qur'an Digital</p>
       </div>
 
-      <input
-        type="text"
-        className="search-box"
-        placeholder="🔍 Cari nama surat..."
-      />
-
       <ul className="menu">
-        <li><Link to="/">🏠 Dashboard</Link></li>
-        <li><Link to="/">📚 Daftar Surat</Link></li>
-        <li><Link to="/favorit">⭐ Favorit</Link></li>
-      </ul>
+        <li>
+          <Link to="/">🏠 Dashboard</Link>
+        </li>
 
-      <div className="sidebar-info">
-        <p>🕌 114 Surat</p>
-        <p>📜 Lengkap Arab + Arti</p>
-      </div>
+        <li>
+          <Link to="/">📚 Daftar Surat</Link>
+        </li>
+
+        <li>
+          <Link to="/favorit">⭐ Favorit</Link>
+        </li>
+      </ul>
 
       <div className="sidebar-footer">
         <small>✨ Semoga bermanfaat</small>
