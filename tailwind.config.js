@@ -22,8 +22,8 @@ export default {
         'noor': '20px',          // Custom 20px rounded corner requested by user
       },
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'sans-serif'],
-        arabic: ['arabic-custom', 'serif'],
+        sans: ['Poppins', 'Inter', 'sans-serif'],
+        arabic: ['Amiri', 'arabic-custom', 'serif'],
       },
       boxShadow: {
         'noor-sm': '0 4px 6px -1px rgba(122, 88, 69, 0.08), 0 2px 4px -1px rgba(122, 88, 69, 0.05)',
