@@ -1,12 +1,12 @@
 @font-face {
   font-family: "arabic-custom";
-  src: url("/fonts/TintaArabic.otf"); /* tanpa format() biar aman */
+  src: url("./assets/fonts/TintaArabic-Light.otf");
 }
 
 .arabic-text {
-  font-family: "arabic-custom", serif; /* ada fallback */
-  font-size: 28px;
+  font-family: "arabic-custom", "Amiri", "Scheherazade New", serif;
+  font-size: 32px;
   direction: rtl;
   text-align: right;
-  line-height: 1.9;
+  line-height: 2.2;
 }
