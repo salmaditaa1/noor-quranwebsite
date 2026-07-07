@@ -37,8 +37,14 @@
   }
 
   body {
-    @apply bg-noor-bg text-noor-dark font-sans selection:bg-noor-gold/30 selection:text-noor-dark;
+    @apply bg-noor-bg text-noor-dark font-sans;
   }
+}
+
+/* Custom Selection */
+::selection {
+  background-color: rgba(181, 138, 68, 0.3); /* gold with opacity */
+  color: var(--color-noor-dark);
 }
 
 /* Custom Scrollbar */
