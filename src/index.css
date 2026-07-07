@@ -3,6 +3,39 @@
 @tailwind utilities;
 
 @layer base {
+  :root, .theme-cream {
+    --color-noor-dark: #2C0F12;
+    --color-noor-light: #6B1E23;
+    --color-noor-bg: #DABE9E;
+    --color-noor-card: #F6EFE4;
+    --color-noor-gold: #B58A44;
+    --color-noor-text: #2C0F12;
+    --color-noor-textSecondary: #7A5845;
+    --color-noor-divider: #E8D8BF;
+  }
+
+  .theme-mahogany {
+    --color-noor-dark: #F6EFE4;
+    --color-noor-light: #E8D8BF;
+    --color-noor-bg: #1A090B;
+    --color-noor-card: #2C0F12;
+    --color-noor-gold: #D4A352;
+    --color-noor-text: #F6EFE4;
+    --color-noor-textSecondary: #B58A44;
+    --color-noor-divider: #4A1A1E;
+  }
+
+  .theme-gold {
+    --color-noor-dark: #FFFFFF;
+    --color-noor-light: #F6EFE4;
+    --color-noor-bg: #1C1814;
+    --color-noor-card: #2A241C;
+    --color-noor-gold: #C2964B;
+    --color-noor-text: #FFFFFF;
+    --color-noor-textSecondary: #9E8B72;
+    --color-noor-divider: #3D3529;
+  }
+
   body {
     @apply bg-noor-bg text-noor-dark font-sans selection:bg-noor-gold/30 selection:text-noor-dark;
   }
@@ -53,9 +86,9 @@
 
 /* Islamic Geometric Background Pattern */
 .islamic-pattern {
-  background-color: #dabe9e;
-  background-image: radial-gradient(rgba(181, 138, 68, 0.15) 1px, transparent 0),
-                    radial-gradient(rgba(181, 138, 68, 0.15) 1px, transparent 0);
+  background-color: var(--color-noor-bg);
+  background-image: radial-gradient(var(--color-noor-gold) 1px, transparent 0),
+                    radial-gradient(var(--color-noor-gold) 1px, transparent 0);
   background-size: 24px 24px;
   background-position: 0 0, 12px 12px;
 }

@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { HashRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AnimatePresence } from "framer-motion";
@@ -6,12 +6,14 @@ import { AnimatePresence } from "framer-motion";
 // Context Providers
 import { AppSettingsProvider } from "./context/AppSettingsContext";
 import { AudioProvider } from "./context/AudioContext";
+import { ActivityProvider } from "./context/ActivityContext";
 
 // Layout & Components
 import Navbar from "./components/Layout/Navbar";
 import AudioPlayer from "./components/Quran/AudioPlayer";
 import PageTransition from "./components/Layout/PageTransition";
 import Loader from "./components/Common/Loader";
+import AzanReminder from "./components/PrayerTimes/AzanReminder";
 
 // Lazy-loaded Pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -56,11 +58,28 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    const prefs = JSON.parse(localStorage.getItem("noor-preferences"));
+    return prefs?.theme || "cream";
+  });
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const prefs = JSON.parse(localStorage.getItem("noor-preferences"));
+      if (prefs?.theme) setTheme(prefs.theme);
+    };
+    window.addEventListener("themeChange", handleThemeChange);
+    return () => window.removeEventListener("themeChange", handleThemeChange);
+  }, []);
+
   return (
-    <AppSettingsProvider>
-      <AudioProvider>
-        <HashRouter>
-          <div className="min-h-screen islamic-pattern flex flex-col md:flex-row relative">
+    <ActivityProvider>
+      <AppSettingsProvider>
+        <AudioProvider>
+          <HashRouter>
+            <AzanReminder />
+            <div className={`min-h-screen flex flex-col md:flex-row relative theme-${theme} bg-noor-bg text-noor-dark transition-colors duration-500`}>
+              <div className="absolute inset-0 islamic-pattern opacity-10 pointer-events-none z-0"></div>
             {/* Sidebar / Bottom Tab Navigation */}
             <Navbar />
 
@@ -91,6 +110,7 @@ function App() {
         </HashRouter>
       </AudioProvider>
     </AppSettingsProvider>
+    </ActivityProvider>
   );
 }
 

@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Search, Heart, Share2, Sparkles } from "lucide-react";
+import { Search, Heart, Share2, Sparkles, BookMarked, Bookmark } from "lucide-react";
+import toast from "react-hot-toast";
 import duaData from "../data/dua.json";
+import { useAppSettings } from "../context/AppSettingsContext";
 
 function DailyDuaPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const { toggleBookmarkVerse, isVerseBookmarked } = useAppSettings();
 
   const categories = ["Semua", ...new Set(duaData.map(d => d.category))];
 
@@ -15,6 +18,18 @@ function DailyDuaPage() {
     const matchesCat = activeCategory === "Semua" || d.category === activeCategory;
     return matchesSearch && matchesCat;
   });
+
+  const handleShare = (dua) => {
+    if (navigator.share) {
+      navigator.share({
+        title: dua.title,
+        text: `*${dua.title}*\n\n${dua.arabic}\n\n_${dua.transliteration}_\n\nArtinya: "${dua.translation}"\n\n[${dua.reference}]`,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(`*${dua.title}*\n\n${dua.arabic}\n\n_${dua.transliteration}_\n\nArtinya: "${dua.translation}"\n\n[${dua.reference}]`);
+      toast.success("Doa disalin ke clipboard!");
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8">
@@ -86,10 +101,18 @@ function DailyDuaPage() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <button className="p-2 bg-noor-card border border-noor-divider/50 rounded-lg text-noor-textSecondary hover:text-noor-gold transition-colors" title="Favorit">
-                      <Heart className="w-4 h-4" />
+                    <button 
+                      onClick={() => toggleBookmarkVerse({ surahNomor: "dua", nomorAyat: dua.id, text: dua.title })}
+                      className={`p-2 border rounded-lg transition-colors ${isVerseBookmarked("dua", dua.id) ? "bg-noor-gold/10 border-noor-gold text-noor-gold" : "bg-noor-card border-noor-divider/50 text-noor-textSecondary hover:text-noor-gold"}`} 
+                      title="Bookmark"
+                    >
+                      <Bookmark className={`w-4 h-4 ${isVerseBookmarked("dua", dua.id) ? "fill-current" : ""}`} />
                     </button>
-                    <button className="p-2 bg-noor-card border border-noor-divider/50 rounded-lg text-noor-textSecondary hover:text-noor-gold transition-colors" title="Bagikan">
+                    <button 
+                      onClick={() => handleShare(dua)}
+                      className="p-2 bg-noor-card border border-noor-divider/50 rounded-lg text-noor-textSecondary hover:text-noor-gold transition-colors" 
+                      title="Bagikan"
+                    >
                       <Share2 className="w-4 h-4" />
                     </button>
                   </div>

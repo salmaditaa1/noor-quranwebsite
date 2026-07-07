@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
-import { RotateCcw, Volume2, VolumeX, Smartphone } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import toast from "react-hot-toast";
+import { useActivity } from "../../context/ActivityContext";
 
 const DHIKR_PHRASES = [
   { arabic: "سُبْحَانَ ٱللَّٰهِ", transliteration: "Subhanallah", meaning: "Maha Suci Allah" },
@@ -19,7 +20,7 @@ function TasbihPanel() {
   });
   const [target, setTarget] = useState(33);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [hapticEnabled, setHapticEnabled] = useState(true);
+  const { addActivity } = useActivity();
 
   const controls = useAnimation();
   const currentDhikr = DHIKR_PHRASES[selectedDhikrIndex];
@@ -67,7 +68,7 @@ function TasbihPanel() {
 
   // Perform Haptic
   const triggerHaptic = (isFinish = false) => {
-    if (!hapticEnabled || !("vibrate" in navigator)) return;
+    if (!("vibrate" in navigator)) return;
     if (isFinish) {
       navigator.vibrate([150, 100, 150]);
     } else {
@@ -95,6 +96,12 @@ function TasbihPanel() {
       playClickSound(true);
       triggerHaptic(true);
       toast.success(`Alhamdulillah, target ${target}x ${currentDhikr.transliteration} tercapai!`);
+      
+      addActivity({
+        type: "tasbih",
+        title: "Tasbih Selesai",
+        description: `${target}x ${currentDhikr.transliteration}`
+      });
     } else {
       playClickSound(false);
       triggerHaptic(false);
@@ -138,7 +145,7 @@ function TasbihPanel() {
           ))}
         </div>
 
-        {/* Audio/Haptic Switches */}
+        {/* Audio Switches */}
         <div className="flex gap-2">
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -150,18 +157,6 @@ function TasbihPanel() {
             title="Suara"
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-          </button>
-
-          <button
-            onClick={() => setHapticEnabled(!hapticEnabled)}
-            className={`p-2 rounded-xl border border-noor-divider/60 transition-all duration-200 ${
-              hapticEnabled
-                ? "bg-noor-gold/15 text-noor-light border-noor-gold/30"
-                : "bg-white text-noor-textSecondary/40"
-            }`}
-            title="Getaran"
-          >
-            <Smartphone className="w-4 h-4" />
           </button>
         </div>
       </div>

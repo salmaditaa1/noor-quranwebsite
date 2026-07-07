@@ -1,48 +1,21 @@
 import { useState, useEffect } from "react";
 import { Compass, Calendar } from "lucide-react";
 
-// Robust conversion from Gregorian to Hijri Date
+// Robust conversion from Gregorian to Hijri Date using native Intl API
 function getHijriDate(date = new Date()) {
-  const gDay = date.getDate();
-  const gMonth = date.getMonth(); // 0-indexed
-  const gYear = date.getFullYear();
-
-  let jd;
-  let m = gMonth + 1;
-  let y = gYear;
-
-  if (m < 3) {
-    y -= 1;
-    m += 12;
+  try {
+    const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const formatted = formatter.format(date);
+    // Ensure " H" is appended if not present
+    return formatted.includes(" H") ? formatted : `${formatted} H`;
+  } catch (error) {
+    // Fallback if browser doesn't support u-ca-islamic
+    return "1 Muharram 1448 H";
   }
-
-  const a = Math.floor(y / 100);
-  const b = 2 - a + Math.floor(a / 4);
-  jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + gDay + b - 1524.5;
-
-  const epoch = 1948439.5;
-  const l = jd - epoch + 10632;
-  const n = Math.floor((l - 1) / 10631);
-  const lRest = l - 10631 * n + 354;
-  const j = Math.floor((10985 - lRest) / 5316) * Math.floor((50 * lRest + 228553) / 17719) + Math.floor(lRest / 5670) * Math.floor((43 * lRest + 15238) / 15303);
-  const lRest2 = lRest - Math.floor((30 - j) / 15) * Math.floor((17719 * j + 176589) / 50) - Math.floor(j / 30) * Math.floor((15303 * j + 24484) / 43) + 950;
-  
-  let hMonth = Math.floor((30 * lRest2 + 20970) / 1061);
-  let hDay = lRest2 - Math.floor((1061 * hMonth + 20970) / 30) + 1;
-  let hYear = 30 * n + j - 30;
-
-  if (hMonth > 12) {
-    hMonth -= 12;
-    hYear += 1;
-  }
-
-  const MONTHS = [
-    "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
-    "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
-    "Ramadhan", "Syawal", "Dzulqa'dah", "Dzulhijjah"
-  ];
-
-  return `${hDay} ${MONTHS[hMonth - 1]} ${hYear} H`;
 }
 
 function Header() {

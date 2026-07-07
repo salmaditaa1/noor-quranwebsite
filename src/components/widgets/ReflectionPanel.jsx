@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Heart, BookOpen, MessageSquare, Compass, Copy } from "lucide-react";
 import toast from "react-hot-toast";
+import { useActivity } from "../../context/ActivityContext";
 
 const FEELINGS = [
   { id: "grateful", label: "Bersyukur", emoji: "😊", color: "bg-green-500/10 text-green-700 border-green-500/25" },
@@ -101,19 +102,19 @@ const RECOMMENDATIONS = {
 
 function ReflectionPanel() {
   const [selectedFeeling, setSelectedFeeling] = useState(null);
+  const { addActivity } = useActivity();
 
   const handleSelectFeeling = (feelingId) => {
     setSelectedFeeling(feelingId);
 
-    // Save history to LocalStorage
-    const history = JSON.parse(localStorage.getItem("noor-reflection-history")) || [];
-    const entry = {
-      feeling: feelingId,
-      label: FEELINGS.find(f => f.id === feelingId).label,
-      timestamp: Date.now()
-    };
-    history.push(entry);
-    localStorage.setItem("noor-reflection-history", JSON.stringify(history));
+    const label = FEELINGS.find(f => f.id === feelingId).label;
+
+    // Save history to ActivityContext
+    addActivity({
+      type: "reflection",
+      title: "Refleksi Hati",
+      description: `Merasa "${label}"`,
+    });
 
     toast.success(`Terima kasih telah berbagi. Semoga Allah melapangkan hati Anda.`);
   };
@@ -183,12 +184,12 @@ function ReflectionPanel() {
                 <p className="text-left text-xs font-semibold text-noor-textSecondary italic">"{rec.verse.translation}"</p>
                 <div className="flex justify-between items-center mt-2.5 pt-2.5 border-t border-noor-divider/25">
                   <span className="text-[9px] font-bold text-noor-gold font-sans">{rec.verse.ref}</span>
-                  <Link
-                    to={rec.verse.link}
+                  <button
+                    onClick={() => toast.success("Ayat pengingat telah disajikan untuk Anda.")}
                     className="text-[9px] bg-noor-light hover:bg-[#2C0F12] text-[#F6EFE4] px-2 py-1 rounded font-bold transition-colors"
                   >
-                    Buka Surat
-                  </Link>
+                    Baca dan Resapi
+                  </button>
                 </div>
               </div>
             </div>

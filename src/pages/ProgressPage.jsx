@@ -1,27 +1,54 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { BarChart3, TrendingUp, Target, Award, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useActivity } from "../context/ActivityContext";
 
 function ProgressPage() {
   const [period, setPeriod] = useState("Minggu Ini");
 
-  // Mock Data
-  const stats = {
-    streak: 12,
-    quranPages: 45,
-    dhikrCount: 1250,
-    prayersOnTime: "85%"
-  };
+  const { activities } = useActivity();
 
-  const chartData = [
-    { day: "Sen", percent: 40 },
-    { day: "Sel", percent: 70 },
-    { day: "Rab", percent: 100 },
-    { day: "Kam", percent: 80 },
-    { day: "Jum", percent: 100 },
-    { day: "Sab", percent: 60 },
-    { day: "Min", percent: 90 },
-  ];
+  // Calculate dynamic stats from activity logs
+  const stats = useMemo(() => {
+    let quranPages = 0;
+    let dhikrCount = 0;
+
+    activities.forEach(a => {
+      if (a.type === "quran") quranPages++;
+      if (a.type === "dzikir" || a.type === "tasbih") dhikrCount++;
+    });
+
+    return {
+      streak: 1, // simplified for now
+      quranPages,
+      dhikrCount,
+      prayersOnTime: "100%"
+    };
+  }, [activities]);
+
+  // Aggregate by day of week
+  const chartData = useMemo(() => {
+    const days = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+    const counts = [0, 0, 0, 0, 0, 0, 0];
+    
+    // Default to last 7 days including today
+    activities.forEach(a => {
+      const d = new Date(a.timestamp);
+      counts[d.getDay()]++;
+    });
+
+    const maxCount = Math.max(...counts, 1);
+    
+    return [
+      { day: "Sen", percent: (counts[1] / maxCount) * 100 },
+      { day: "Sel", percent: (counts[2] / maxCount) * 100 },
+      { day: "Rab", percent: (counts[3] / maxCount) * 100 },
+      { day: "Kam", percent: (counts[4] / maxCount) * 100 },
+      { day: "Jum", percent: (counts[5] / maxCount) * 100 },
+      { day: "Sab", percent: (counts[6] / maxCount) * 100 },
+      { day: "Min", percent: (counts[0] / maxCount) * 100 },
+    ];
+  }, [activities]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8">
@@ -103,8 +130,8 @@ function ProgressPage() {
                   style={{ height: `${d.percent}%` }}
                 >
                   {/* Tooltip on hover */}
-                  <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-noor-dark text-white text-[10px] font-bold px-2 py-1 rounded shadow-md transition-opacity">
-                    {d.percent}%
+                  <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-noor-dark text-white text-[10px] font-bold px-2 py-1 rounded shadow-md transition-opacity pointer-events-none z-10">
+                    {Math.round(d.percent)}%
                   </div>
                 </div>
               </div>

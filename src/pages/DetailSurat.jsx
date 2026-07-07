@@ -18,10 +18,12 @@ import {
   Type,
   AlignLeft,
   X,
-  Volume2
+  Volume2,
+  Heart
 } from "lucide-react";
 import { useAppSettings } from "../context/AppSettingsContext";
 import { useAudio } from "../context/AudioContext";
+import { useActivity } from "../context/ActivityContext";
 import Loader from "../components/Common/Loader";
 import toast from "react-hot-toast";
 
@@ -31,6 +33,7 @@ function DetailSurat() {
   
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Custom display settings
   const [showTranslation, setShowTranslation] = useState(true);
@@ -49,14 +52,39 @@ function DetailSurat() {
   const [playingVerse, setPlayingVerse] = useState(null); // nomorAyat currently playing
   const verseHowlRef = useRef(null);
 
-  const { isVerseBookmarked, toggleBookmarkVerse, updateLastRead, lastRead } = useAppSettings();
+  const { 
+    isSurahFavorite, 
+    toggleFavoriteSurah, 
+    toggleBookmarkVerse, 
+    isVerseBookmarked, 
+    updateLastRead,
+    lastRead,
+    appPreferences
+  } = useAppSettings();
   const { playSurahAudio, togglePlay, activeSurah, isPlaying, activeReciter } = useAudio();
+  const { addActivity } = useActivity();
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll Progress Listener
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+      const scrollPercent = scrollTop / (docHeight - winHeight);
+      setScrollProgress(scrollPercent * 100);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Load Surah details
   useEffect(() => {
     let active = true;
     const fetchDetail = async () => {
       setLoading(true);
+      setError(null);
       try {
         const res = await axios.get(`https://equran.id/api/v2/surat/${nomor}`);
         if (active && res.data?.data) {
@@ -69,10 +97,16 @@ function DetailSurat() {
             nomorAyat: 1,
             timestamp: Date.now()
           }));
+          
+          addActivity({
+            type: "quran",
+            title: "Membaca Surah",
+            description: `Membuka QS. ${res.data.data.namaLatin}`
+          });
         }
       } catch (err) {
         console.error("Gagal memuat ayat:", err);
-        toast.error("Gagal memuat ayat-ayat surah");
+        setError("Gagal memuat surah. Silakan periksa koneksi internet Anda.");
       } finally {
         if (active) setLoading(false);
       }
@@ -87,6 +121,12 @@ function DetailSurat() {
   }, [nomor]);
 
   if (loading) return <Loader label="Memuat Ayat..." />;
+  if (error) return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+      <p className="text-red-500 font-bold mb-4">{error}</p>
+      <button onClick={() => window.location.reload()} className="px-4 py-2 bg-noor-gold text-white rounded-xl">Coba Lagi</button>
+    </div>
+  );
   if (!detail) return <p className="text-center py-10">Surah tidak ditemukan</p>;
 
   const surahNum = parseInt(nomor);
@@ -209,6 +249,13 @@ function DetailSurat() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8 relative">
+      {/* Sticky Progress Bar */}
+      <div className="fixed top-0 left-0 right-0 h-1.5 bg-noor-divider z-50 md:ml-[285px]">
+        <div 
+          className="h-full bg-noor-gold transition-all duration-100 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
       
       {/* Navigation Top Bar */}
       <div className="flex justify-between items-center mb-6">
@@ -284,6 +331,18 @@ function DetailSurat() {
             title="Pengaturan Tampilan"
           >
             <Settings className="w-4 h-4" />
+          </button>
+          
+          <button
+            onClick={() => toggleFavoriteSurah(detail)}
+            className={`flex items-center justify-center p-2.5 border rounded-xl transition-all ${
+              isSurahFavorite(detail.nomor)
+                ? "bg-red-500/20 text-red-300 border-red-500/30"
+                : "bg-[#F6EFE4]/10 hover:bg-[#F6EFE4]/20 border-[#F6EFE4]/20 text-[#F6EFE4]"
+            }`}
+            title="Favorit"
+          >
+            <Heart className={`w-4 h-4 ${isSurahFavorite(detail.nomor) ? "fill-current text-red-400" : ""}`} />
           </button>
         </div>
 
@@ -496,7 +555,13 @@ function DetailSurat() {
 
                 {/* Arabic Script & Translation details */}
                 <div className="flex-1 text-right pl-0 md:pl-6 w-full">
-                  <p className={`leading-[2.4] text-noor-dark select-all ${getArabicTextClass()}`}>
+                  <p 
+                    className={`leading-[2.4] text-noor-dark select-all ${getArabicTextClass()}`}
+                    style={{ 
+                      fontSize: appPreferences?.arabicFontSize ? `${appPreferences.arabicFontSize}px` : undefined,
+                      fontFamily: appPreferences?.arabicFont === "amiri" ? "'Amiri', serif" : undefined
+                    }}
+                  >
                     {ayat.teksArab}
                   </p>
 

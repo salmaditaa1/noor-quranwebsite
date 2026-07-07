@@ -2,6 +2,7 @@ import { useState } from "react";
 import { List, CheckCircle, RotateCcw } from "lucide-react";
 import dzikirData from "../data/dzikir.json";
 import TasbihPanel from "../components/Tasbih/TasbihPanel";
+import { useActivity } from "../context/ActivityContext";
 
 function DzikirPage() {
   const [activeTab, setActiveTab] = useState("dzikir"); // "dzikir" | "tasbih"
@@ -10,12 +11,22 @@ function DzikirPage() {
 
   const categories = [...new Set(dzikirData.map(d => d.category))];
   const currentDzikir = dzikirData.filter(d => d.category === activeCategory);
+  const { addActivity } = useActivity();
 
   const incrementCounter = (id, max) => {
     setCounters(prev => {
       const current = prev[id] || 0;
       if (current < max) {
-        return { ...prev, [id]: current + 1 };
+        const nextCount = current + 1;
+        if (nextCount === max) {
+          const item = dzikirData.find(d => d.id === id);
+          addActivity({
+            type: "dzikir",
+            title: "Dzikir Selesai",
+            description: `Menyelesaikan ${item.title}`
+          });
+        }
+        return { ...prev, [id]: nextCount };
       }
       return prev;
     });

@@ -3,8 +3,8 @@
     "id": "dzikir-1",
     "category": "Pagi",
     "title": "Ayat Kursi",
-    "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...",
-    "transliteration": "Allahu la ilaha illa huwal-hayyul-qayyum. La ta'khudhuhu sinatun wa la nawm...",
+    "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+    "transliteration": "Allahu la ilaha illa huwal-hayyul-qayyum. La ta'khudhuhu sinatun wa la nawm. Lahu ma fis-samawati wa ma fil-ard. Man dhal-ladhi yashfa'u 'indahu illa bi-idhnih. Ya'lamu ma bayna aydihim wa ma khalfahum. Wa la yuhituna bi-shay'im-min 'ilmihi illa bima sha'a. Wasi'a kursiyyuhus-samawati wal-ard. Wa la ya'uduhu hifzhuhuma. Wa huwal-'aliyul-'azhim.",
     "translation": "Allah, tidak ada tuhan (yang berhak disembah) melainkan Dia Yang Hidup kekal lagi terus menerus mengurus (makhluk-Nya); tidak mengantuk dan tidak tidur...",
     "reference": "QS. Al-Baqarah: 255 (Dibaca 1x)",
     "count": 1
@@ -21,6 +21,16 @@
   },
   {
     "id": "dzikir-3",
+    "category": "Petang",
+    "title": "Dzikir Perlindungan Waktu Petang",
+    "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "transliteration": "A'udzu bikalimatillahit tam-mati min syarri ma khalaq.",
+    "translation": "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan makhluk yang diciptakan-Nya.",
+    "reference": "HR. Muslim (Dibaca 3x pada waktu petang)",
+    "count": 3
+  },
+  {
+    "id": "dzikir-4",
     "category": "Setelah Sholat",
     "title": "Tasbih, Tahmid, Takbir",
     "arabic": "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ",
@@ -30,7 +40,37 @@
     "count": 33
   },
   {
-    "id": "dzikir-4",
+    "id": "dzikir-5",
+    "category": "Setelah Sholat",
+    "title": "Ayat Kursi",
+    "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...",
+    "transliteration": "Allahu la ilaha illa huwal-hayyul-qayyum...",
+    "translation": "Allah, tidak ada tuhan (yang berhak disembah) melainkan Dia...",
+    "reference": "HR. An Nasa'i (Dibaca 1x)",
+    "count": 1
+  },
+  {
+    "id": "dzikir-6",
+    "category": "Sebelum Tidur",
+    "title": "Dzikir Sebelum Tidur",
+    "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    "transliteration": "Bismika Allahumma amutu wa ahya.",
+    "translation": "Dengan nama-Mu, ya Allah, aku mati dan aku hidup.",
+    "reference": "HR. Bukhari (Dibaca 1x)",
+    "count": 1
+  },
+  {
+    "id": "dzikir-7",
+    "category": "Bangun Tidur",
+    "title": "Dzikir Bangun Tidur",
+    "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    "transliteration": "Alhamdulillahilladzi ahyana ba'da ma amatana wa ilaihin nusyur.",
+    "translation": "Segala puji bagi Allah yang telah menghidupkan kami setelah mematikan kami, dan kepada-Nya kami kembali.",
+    "reference": "HR. Bukhari (Dibaca 1x)",
+    "count": 1
+  },
+  {
+    "id": "dzikir-8",
     "category": "Harian",
     "title": "Tahlil",
     "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
@@ -38,15 +78,5 @@
     "translation": "Tidak ada tuhan yang berhak disembah selain Allah Yang Maha Esa, tidak ada sekutu bagi-Nya. Bagi-Nya kerajaan dan bagi-Nya segala pujian. Dia Maha Kuasa atas segala sesuatu.",
     "reference": "HR. Bukhari & Muslim (Dibaca 100x sehari)",
     "count": 100
-  },
-  {
-    "id": "dzikir-5",
-    "category": "Petang",
-    "title": "Dzikir Perlindungan Waktu Petang",
-    "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
-    "transliteration": "A'udzu bikalimatillahit tam-mati min syarri ma khalaq.",
-    "translation": "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan makhluk yang diciptakan-Nya.",
-    "reference": "HR. Muslim (Dibaca 3x pada waktu petang)",
-    "count": 3
   }
 ]

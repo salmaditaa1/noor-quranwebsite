@@ -8,14 +8,14 @@ export default {
     extend: {
       colors: {
         noor: {
-          dark: "#2C0F12",       // Primary gradient start
-          light: "#6B1E23",      // Primary gradient end
-          bg: "#DABE9E",         // Main page background
-          card: "#F6EFE4",       // Glassy/solid card background
-          gold: "#B58A44",       // Accent color for active items, borders
-          text: "#2C0F12",       // Primary text
-          textSecondary: "#7A5845", // Secondary text
-          divider: "#E8D8BF",    // Card dividers, subtle lines
+          dark: "var(--color-noor-dark)",
+          light: "var(--color-noor-light)",
+          bg: "var(--color-noor-bg)",
+          card: "var(--color-noor-card)",
+          gold: "var(--color-noor-gold)",
+          text: "var(--color-noor-text)",
+          textSecondary: "var(--color-noor-textSecondary)",
+          divider: "var(--color-noor-divider)",
         }
       },
       borderRadius: {

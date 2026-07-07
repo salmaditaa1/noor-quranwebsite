@@ -88,6 +88,31 @@ function AzanSettings() {
 
       <div className="space-y-6">
         
+        {/* Notification Permission Banner */}
+        {"Notification" in window && Notification.permission !== "granted" && (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-orange-800 text-sm font-medium">
+              Aplikasi ini membutuhkan izin notifikasi agar dapat mengingatkan Anda saat waktu sholat tiba.
+            </div>
+            <button
+              onClick={() => {
+                Notification.requestPermission().then(permission => {
+                  if (permission === "granted") {
+                    toast.success("Izin notifikasi diberikan");
+                    // Force a re-render
+                    setSettings({...settings});
+                  } else {
+                    toast.error("Izin notifikasi ditolak");
+                  }
+                });
+              }}
+              className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-bold whitespace-nowrap hover:bg-orange-700 transition-colors"
+            >
+              Izinkan Notifikasi
+            </button>
+          </div>
+        )}
+
         {/* Global Settings */}
         <div className="bg-white border border-noor-divider shadow-noor-sm rounded-xl p-5">
           <h3 className="font-bold text-noor-dark mb-4 border-b border-noor-divider pb-2">Pengaturan Umum</h3>

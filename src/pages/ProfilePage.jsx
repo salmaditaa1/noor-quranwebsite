@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Palette, Type, Check, LogOut, Bell } from "lucide-react";
+import { User, Settings, Palette, Type, Check, LogOut, Bell, Edit3, Save, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const THEMES = [
@@ -26,6 +26,18 @@ function ProfilePage() {
     };
   });
 
+  const [profile, setProfile] = useState(() => {
+    return JSON.parse(localStorage.getItem("noor-profile")) || {
+      name: "Hamba Allah",
+      email: "hamba@allah.com",
+      city: "Jakarta",
+      joinDate: "Ramadhan 1445 H"
+    };
+  });
+
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editForm, setEditForm] = useState(profile);
+
   useEffect(() => {
     localStorage.setItem("noor-preferences", JSON.stringify(preferences));
   }, [preferences]);
@@ -33,6 +45,18 @@ function ProfilePage() {
   const updatePreference = (key, value) => {
     setPreferences(prev => ({ ...prev, [key]: value }));
     toast.success("Preferensi disimpan");
+    
+    if (key === "theme") {
+      // Dispatch a custom event so App.jsx knows the theme changed
+      window.dispatchEvent(new Event('themeChange'));
+    }
+  };
+
+  const handleSaveProfile = () => {
+    setProfile(editForm);
+    localStorage.setItem("noor-profile", JSON.stringify(editForm));
+    setIsEditingProfile(false);
+    toast.success("Profil berhasil diperbarui");
   };
 
   const handleLogout = () => {
@@ -42,7 +66,6 @@ function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8">
       
-      {/* Header Profile */}
       <div className="bg-gradient-to-br from-noor-dark to-noor-light text-[#F6EFE4] rounded-noor p-6 md:p-8 mb-8 border border-noor-gold/25 shadow-noor-heavy flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
         <div className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-5 pointer-events-none">
            <User className="w-full h-full text-noor-gold" />
@@ -53,16 +76,61 @@ function ProfilePage() {
           <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-[#F6EFE4] rounded-full"></div>
         </div>
 
-        <div className="text-center md:text-left relative z-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-wide font-sans mb-1">
-            Hamba Allah
-          </h2>
-          <p className="text-[#E8D8BF]/80 text-sm font-medium mb-3">
-            Bergabung sejak Ramadhan 1445 H
-          </p>
-          <span className="inline-block px-3 py-1 bg-noor-gold/20 border border-noor-gold/40 rounded-full text-xs font-bold text-noor-gold">
-            Premium Member
-          </span>
+        <div className="text-center md:text-left relative z-10 flex-1">
+          {isEditingProfile ? (
+            <div className="bg-white/10 p-4 rounded-xl border border-white/20 text-noor-dark">
+              <input 
+                type="text" 
+                value={editForm.name} 
+                onChange={e => setEditForm({...editForm, name: e.target.value})}
+                className="w-full px-3 py-1.5 rounded-lg mb-2 text-sm bg-white border border-noor-gold/30 outline-none" 
+                placeholder="Nama Lengkap" 
+              />
+              <input 
+                type="email" 
+                value={editForm.email} 
+                onChange={e => setEditForm({...editForm, email: e.target.value})}
+                className="w-full px-3 py-1.5 rounded-lg mb-2 text-sm bg-white border border-noor-gold/30 outline-none" 
+                placeholder="Email" 
+              />
+              <input 
+                type="text" 
+                value={editForm.city} 
+                onChange={e => setEditForm({...editForm, city: e.target.value})}
+                className="w-full px-3 py-1.5 rounded-lg mb-3 text-sm bg-white border border-noor-gold/30 outline-none" 
+                placeholder="Kota Domisili" 
+              />
+              <div className="flex gap-2 justify-end">
+                <button onClick={() => setIsEditingProfile(false)} className="px-3 py-1.5 bg-gray-500/80 hover:bg-gray-500 text-white rounded-lg text-xs font-bold transition-colors">Batal</button>
+                <button onClick={handleSaveProfile} className="px-3 py-1.5 bg-noor-gold hover:bg-[#967135] text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"><Save className="w-3 h-3" /> Simpan</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col md:flex-row items-center justify-between">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold tracking-wide font-sans mb-1">
+                    {profile.name}
+                  </h2>
+                  <p className="text-[#E8D8BF]/80 text-sm font-medium mb-1">
+                    {profile.email} • {profile.city}
+                  </p>
+                  <p className="text-[#E8D8BF]/60 text-xs font-medium mb-3">
+                    Bergabung sejak {profile.joinDate}
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setIsEditingProfile(true)}
+                  className="mt-4 md:mt-0 px-4 py-2 bg-noor-gold/20 hover:bg-noor-gold/40 border border-noor-gold/50 rounded-xl text-sm font-bold text-white flex items-center gap-2 transition-colors"
+                >
+                  <Edit3 className="w-4 h-4" /> Edit Profil
+                </button>
+              </div>
+              <span className="inline-block px-3 py-1 bg-noor-gold/20 border border-noor-gold/40 rounded-full text-xs font-bold text-noor-gold">
+                Premium Member
+              </span>
+            </>
+          )}
         </div>
       </div>
 
@@ -204,9 +272,14 @@ function ProfilePage() {
             <p className="text-[10px] text-noor-textSecondary/70 mb-4">
               Punya pertanyaan atau masukan untuk aplikasi Noor? Kami siap mendengarkan.
             </p>
-            <button className="w-full py-2 bg-noor-dark text-white rounded-lg text-xs font-bold shadow-md hover:bg-noor-gold transition-colors">
+            <a 
+              href="https://wa.me/6282289354012"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2 bg-noor-dark text-white rounded-lg text-xs font-bold shadow-md hover:bg-noor-gold transition-colors inline-block mt-4"
+            >
               Hubungi Dukungan
-            </button>
+            </a>
           </div>
         </div>
 

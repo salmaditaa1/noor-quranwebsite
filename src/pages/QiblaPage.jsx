@@ -61,10 +61,12 @@ function QiblaPage() {
 
     const handleOrientation = (e) => {
       let compassHeading = e.webkitCompassHeading;
-      if (!compassHeading) {
-        // Fallback for non-iOS devices
-        if (e.alpha !== null) {
+      if (compassHeading === undefined || compassHeading === null) {
+        // Fallback for non-iOS devices using absolute orientation
+        if (e.absolute === true || e.type === "deviceorientationabsolute") {
           compassHeading = 360 - e.alpha;
+        } else if (e.alpha !== null) {
+          compassHeading = 360 - e.alpha; // approximate if absolute not guaranteed
         }
       }
       if (compassHeading !== undefined && compassHeading !== null) {
@@ -74,10 +76,18 @@ function QiblaPage() {
       }
     };
 
-    window.addEventListener("deviceorientation", handleOrientation, true);
+    if ("ondeviceorientationabsolute" in window) {
+      window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+    } else {
+      window.addEventListener("deviceorientation", handleOrientation, true);
+    }
 
     return () => {
-      window.removeEventListener("deviceorientation", handleOrientation, true);
+      if ("ondeviceorientationabsolute" in window) {
+        window.removeEventListener("deviceorientationabsolute", handleOrientation, true);
+      } else {
+        window.removeEventListener("deviceorientation", handleOrientation, true);
+      }
     };
   }, [permissionGranted]);
 

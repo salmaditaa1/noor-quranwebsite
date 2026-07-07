@@ -13,9 +13,12 @@ import {
   BookMarked,
   Activity,
   ChevronRight,
-  History
+  History,
+  MapPin,
+  Bell
 } from "lucide-react";
 import { useAppSettings } from "../context/AppSettingsContext";
+import { useActivity } from "../context/ActivityContext";
 import Header from "../components/Layout/Header";
 import PrayerPanel from "../components/PrayerTimes/PrayerPanel";
 import TasbihPanel from "../components/Tasbih/TasbihPanel";
@@ -39,23 +42,32 @@ const POPULAR_SURAHS = [
 ];
 
 const QUICK_LINKS = [
-  { path: "/quran", label: "Al-Qur'an", icon: BookOpen, bg: "bg-[#2C0F12]/5 hover:bg-[#2C0F12]/10" },
-  { path: "/prayer", label: "Jadwal Sholat", icon: Clock, bg: "bg-[#B58A44]/10 hover:bg-[#B58A44]/15" },
-  { path: "/dzikir", label: "Dzikir & Tasbih", icon: Compass, bg: "bg-green-600/5 hover:bg-green-600/10" },
+  { path: "/qibla", label: "Arah Kiblat", icon: MapPin, bg: "bg-[#2C0F12]/5 hover:bg-[#2C0F12]/10" },
+  { path: "/azan-settings", label: "Azan & Alarm", icon: Bell, bg: "bg-[#B58A44]/10 hover:bg-[#B58A44]/15" },
+  { path: "/prayer", label: "Kalender Hijriah", icon: Clock, bg: "bg-green-600/5 hover:bg-green-600/10" },
   { path: "/dua", label: "Doa Harian", icon: Sparkles, bg: "bg-purple-600/5 hover:bg-purple-600/10" },
   { path: "/bookmark", label: "Bookmark", icon: Bookmark, bg: "bg-orange-600/5 hover:bg-orange-600/10" },
-  { path: "/progress", label: "Progress Ibadah", icon: BarChart3, bg: "bg-blue-600/5 hover:bg-blue-600/10" }
+  { path: "/progress", label: "Progress", icon: BarChart3, bg: "bg-blue-600/5 hover:bg-blue-600/10" }
 ];
 
 function Dashboard() {
   const { lastRead } = useAppSettings();
+  const { activities: allActivities } = useActivity();
   const [verse, setVerse] = useState(INSPIRATIONAL_VERSES[0]);
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    // Select stable daily verse
-    const day = new Date().getDate();
-    setVerse(INSPIRATIONAL_VERSES[day % INSPIRATIONAL_VERSES.length]);
+    // Select stable daily verse based on LocalStorage date
+    const todayStr = new Date().toISOString().split("T")[0];
+    let savedVerse = JSON.parse(localStorage.getItem("noor-daily-verse"));
+    
+    if (!savedVerse || savedVerse.date !== todayStr) {
+      const randomIndex = Math.floor(Math.random() * INSPIRATIONAL_VERSES.length);
+      savedVerse = { date: todayStr, index: randomIndex };
+      localStorage.setItem("noor-daily-verse", JSON.stringify(savedVerse));
+    }
+    
+    setVerse(INSPIRATIONAL_VERSES[savedVerse.index]);
 
     // Load recent activities
     const loadActivities = () => {
@@ -71,24 +83,24 @@ function Dashboard() {
         });
       }
 
-      // 2. Check reflection history
-      const reflectionHistory = JSON.parse(localStorage.getItem("noor-reflection-history")) || [];
-      reflectionHistory.slice(-2).forEach((item) => {
-        recent.push({
-          type: "reflection",
-          title: `Refleksi Perasaan`,
-          description: `Merasa "${item.label}"`,
-          timestamp: item.timestamp
-        });
-      });
+      // 2. Load from ActivityContext
+      allActivities.forEach(act => recent.push(act));
 
-      // Sort by timestamp desc and limit to top 3
+      // Sort by timestamp desc and limit to top 4
       recent.sort((a, b) => b.timestamp - a.timestamp);
-      setActivities(recent.slice(0, 3));
+      
+      // Remove exact duplicates (sometimes lastRead overlaps with recent quran activity)
+      const uniqueRecent = recent.filter((act, index, self) =>
+        index === self.findIndex((t) => (
+          t.title === act.title && t.description === act.description
+        ))
+      );
+      
+      setActivities(uniqueRecent.slice(0, 4));
     };
 
     loadActivities();
-  }, [lastRead]);
+  }, [lastRead, allActivities]);
 
   return (
     <div className="space-y-6">
@@ -195,7 +207,7 @@ function Dashboard() {
         <div>
           <PrayerPanel />
         </div>
-        <div className="h-[430px] md:h-auto">
+        <div className="h-[430px] md:h-auto overflow-y-auto scrollbar-thin">
           <TasbihPanel />
         </div>
         <div>
@@ -249,7 +261,7 @@ function Dashboard() {
               Surah Populer
             </h3>
 
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[300px] overflow-y-auto scrollbar-thin pr-2">
               {POPULAR_SURAHS.map((surah) => (
                 <RouterLink
                   key={surah.nomor}
