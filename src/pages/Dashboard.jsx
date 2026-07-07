@@ -44,7 +44,7 @@ const POPULAR_SURAHS = [
 const QUICK_LINKS = [
   { path: "/qibla", label: "Arah Kiblat", icon: MapPin, bg: "bg-[#2C0F12]/5 hover:bg-[#2C0F12]/10" },
   { path: "/azan-settings", label: "Azan & Alarm", icon: Bell, bg: "bg-[#B58A44]/10 hover:bg-[#B58A44]/15" },
-  { path: "/prayer", label: "Kalender Hijriah", icon: Clock, bg: "bg-green-600/5 hover:bg-green-600/10" },
+  { path: "/calendar", label: "Kalender Hijriah", icon: Clock, bg: "bg-green-600/5 hover:bg-green-600/10" },
   { path: "/dua", label: "Doa Harian", icon: Sparkles, bg: "bg-purple-600/5 hover:bg-purple-600/10" },
   { path: "/bookmark", label: "Bookmark", icon: Bookmark, bg: "bg-orange-600/5 hover:bg-orange-600/10" },
   { path: "/progress", label: "Progress", icon: BarChart3, bg: "bg-blue-600/5 hover:bg-blue-600/10" }

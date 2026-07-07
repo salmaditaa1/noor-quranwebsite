@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Palette, Type, Check, LogOut, Bell, Edit3, Save, X } from "lucide-react";
+import { User, Settings, Palette, Type, Check, LogOut, Bell, Edit3, Save, X, Camera } from "lucide-react";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 const THEMES = [
   { id: "cream", name: "Premium Cream", color: "bg-[#F6EFE4]" },
@@ -26,17 +27,13 @@ function ProfilePage() {
     };
   });
 
-  const [profile, setProfile] = useState(() => {
-    return JSON.parse(localStorage.getItem("noor-profile")) || {
-      name: "Hamba Allah",
-      email: "hamba@allah.com",
-      city: "Jakarta",
-      joinDate: "Ramadhan 1445 H"
-    };
-  });
-
+  const { user, updateProfile, logout } = useAuth();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [editForm, setEditForm] = useState(profile);
+  const [editForm, setEditForm] = useState({ 
+    name: user?.name || "", 
+    email: user?.email || "", 
+    city: user?.city || "" 
+  });
 
   useEffect(() => {
     localStorage.setItem("noor-preferences", JSON.stringify(preferences));
@@ -53,14 +50,27 @@ function ProfilePage() {
   };
 
   const handleSaveProfile = () => {
-    setProfile(editForm);
-    localStorage.setItem("noor-profile", JSON.stringify(editForm));
+    updateProfile(editForm);
     setIsEditingProfile(false);
-    toast.success("Profil berhasil diperbarui");
   };
 
   const handleLogout = () => {
-    toast.success("Berhasil keluar dari akun");
+    logout();
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast.error("Ukuran foto maksimal 2MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateProfile({ photo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -71,9 +81,18 @@ function ProfilePage() {
            <User className="w-full h-full text-noor-gold" />
         </div>
         
-        <div className="w-24 h-24 rounded-full bg-[#F6EFE4] text-noor-dark flex items-center justify-center border-4 border-noor-gold/50 shadow-md relative z-10">
-          <User className="w-12 h-12" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-[#F6EFE4] rounded-full"></div>
+        <div className="w-24 h-24 rounded-full bg-[#F6EFE4] text-noor-dark flex items-center justify-center border-4 border-noor-gold/50 shadow-md relative z-10 overflow-hidden group">
+          {user?.photo ? (
+            <img src={user.photo} alt="Profile" className="w-full h-full object-cover" />
+          ) : (
+            <User className="w-12 h-12" />
+          )}
+          
+          <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+            <Camera className="w-6 h-6 text-white mb-1" />
+            <span className="text-[9px] text-white font-bold">Ubah Foto</span>
+            <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+          </label>
         </div>
 
         <div className="text-center md:text-left relative z-10 flex-1">
@@ -110,13 +129,13 @@ function ProfilePage() {
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-extrabold tracking-wide font-sans mb-1">
-                    {profile.name}
+                    {user?.name}
                   </h2>
                   <p className="text-[#E8D8BF]/80 text-sm font-medium mb-1">
-                    {profile.email} • {profile.city}
+                    {user?.email} • {user?.city}
                   </p>
                   <p className="text-[#E8D8BF]/60 text-xs font-medium mb-3">
-                    Bergabung sejak {profile.joinDate}
+                    Bergabung sejak {new Date(user?.id || Date.now()).toLocaleDateString("id-ID")}
                   </p>
                 </div>
                 <button 

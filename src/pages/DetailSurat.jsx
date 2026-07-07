@@ -227,7 +227,8 @@ function DetailSurat() {
   };
 
   const getArabicTextClass = () => {
-    const font = arabicFont === "amiri" ? "font-serif" : "font-arabic";
+    const prefFont = appPreferences?.arabicFont || arabicFont;
+    const font = prefFont === "amiri" ? "font-serif" : "font-arabic";
     let size = "";
     switch (textSize) {
       case "md": size = "text-2xl"; break;
@@ -562,7 +563,7 @@ function DetailSurat() {
                       fontFamily: appPreferences?.arabicFont === "amiri" ? "'Amiri', serif" : undefined
                     }}
                   >
-                    {ayat.teksArab}
+                    {ayat?.teksArab || ""}
                   </p>
 
                   {showLatin && (

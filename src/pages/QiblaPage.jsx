@@ -13,6 +13,7 @@ function QiblaPage() {
   const [qiblaBearing, setQiblaBearing] = useState(0);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
+  const [manualMode, setManualMode] = useState(false);
 
   // Calculate Qibla Bearing
   useEffect(() => {
@@ -142,9 +143,35 @@ function QiblaPage() {
         </div>
       )}
 
-      {(!isSupported) && (
-        <div className="bg-red-50 text-red-700 border border-red-200 rounded-xl p-4 mb-8 text-sm text-center">
-          Sensor kompas tidak didukung di perangkat atau browser ini. Namun Anda masih dapat melihat derajat arah kiblat di bawah.
+      {(!isSupported || manualMode) && (
+        <div className="bg-white border border-noor-divider rounded-xl p-4 mb-6 shadow-sm">
+          <p className="text-sm text-center font-bold text-noor-dark mb-3">
+            Mode Manual
+          </p>
+          <p className="text-xs text-center text-noor-textSecondary mb-4">
+            Arahkan huruf "U" ke arah Utara (gunakan matahari atau kompas lain). 
+            Jarum 🕋 akan menunjukkan arah Kiblat.
+          </p>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={heading}
+            onChange={(e) => setHeading(Number(e.target.value))}
+            className="w-full accent-noor-gold"
+          />
+        </div>
+      )}
+
+      {(!isSupported && !manualMode) && (
+        <div className="bg-red-50 text-red-700 border border-red-200 rounded-xl p-4 mb-6 text-sm text-center">
+          Sensor kompas tidak didukung di perangkat atau browser ini. Beralih ke Mode Manual.
+          <button 
+            onClick={() => setManualMode(true)}
+            className="mt-3 block w-full py-2 bg-white rounded-lg font-bold text-red-600 shadow-sm border border-red-200"
+          >
+            Gunakan Mode Manual
+          </button>
         </div>
       )}
 
@@ -194,6 +221,14 @@ function QiblaPage() {
 
         {/* Readings */}
         <div className="mt-12 bg-white border border-noor-divider/50 p-6 rounded-xl shadow-noor-sm w-full max-w-sm text-center">
+          <div className="flex justify-end mb-4">
+            <button 
+              onClick={() => setManualMode(!manualMode)}
+              className="text-[10px] font-bold px-3 py-1 bg-noor-card border border-noor-divider rounded-lg text-noor-textSecondary hover:text-noor-dark transition-colors"
+            >
+              {manualMode ? "Gunakan Sensor" : "Atur Manual"}
+            </button>
+          </div>
           <div className="grid grid-cols-2 gap-4 divide-x divide-noor-divider/50">
             <div>
               <span className="text-[10px] text-noor-textSecondary uppercase font-bold tracking-wider block mb-1">Arah Anda</span>
