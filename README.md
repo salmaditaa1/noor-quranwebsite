@@ -1,16 +1,72 @@
-# React + Vite
+# 🌙 Noor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Noor adalah website pendamping ibadah yang awalnya aku buat untuk mama, supaya beliau bisa membaca Al-Qur'an dan dzikir harian dalam satu tempat tanpa harus berpindah-pindah aplikasi.
 
-Currently, two official plugins are available:
+Seiring proses pengembangannya, Noor juga menjadi project yang aku gunakan untuk belajar React, Tailwind CSS, serta bagaimana merancang pengalaman pengguna yang sederhana, nyaman, dan mudah digunakan.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Walaupun masih dalam tahap pengembangan, harapannya Noor bisa terus berkembang menjadi aplikasi yang benar-benar bermanfaat untuk digunakan sehari-hari.
 
-## React Compiler
+✨ Fitur
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 📖 Membaca Al-Qur'an lengkap
+- 📍 Continue Reading
+- ⭐ Bookmark & Favorit
+- 🕌 Jadwal Sholat
+- 🧭 Kompas Kiblat
+- 📿 Dzikir & Tasbih
+- 🤲 Doa Harian
+- 🌅 Ayat Harian
+- 📊 Progress Ibadah
+- 💭 Reflection Mode
+- 👤 Profil Pengguna
+- 📱 Tampilan responsif (Desktop & Mobile)
 
-## Expanding the ESLint configuration
+🛠 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React
+- Vite
+- Tailwind CSS
+- Framer Motion
+- React Router
+- Axios
+- Howler.js
+
+🌐 API
+
+- Quran API (equran.id)
+- Aladhan Prayer API
+- Browser Geolocation API
+
+🚀 Menjalankan Project
+
+Clone repository
+git clone https://github.com/salmaditaa1/noor-quranwebsite.git
+
+Masuk ke folder project
+cd noor-quranwebsite
+
+Install dependency
+npm install
+
+Jalankan project
+npm run dev
+
+Build production
+npm run build
+
+📌 Roadmap
+
+Beberapa hal yang masih ingin aku kembangkan:
+
+- Menyempurnakan pengalaman membaca Al-Qur'an
+- Melengkapi dzikir pagi & petang
+- Menambahkan doa harian yang lebih lengkap
+- Penyempurnaan kompas kiblat
+- Notifikasi jadwal sholat
+- Login opsional untuk sinkronisasi bookmark dan progress antar perangkat
+- Peningkatan performa dan pengalaman pengguna
+🤍 Catatan
+
+Project ini masih terus dikembangkan sedikit demi sedikit. Kalau menemukan bug, punya masukan, atau ingin berdiskusi, feel free untuk membuat issue atau menghubungi akuu, niat awalnya memang buat mama, tapi kalo berguna juga buat yg lain kenapa nggaa?!
+
+Semoga Noor bisa menjadi aplikasi yang bermanfaat. 🌙
