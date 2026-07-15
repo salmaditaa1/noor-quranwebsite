@@ -15,6 +15,7 @@ import AudioPlayer from "./components/Quran/AudioPlayer";
 import PageTransition from "./components/Layout/PageTransition";
 import Loader from "./components/Common/Loader";
 import AzanReminder from "./components/PrayerTimes/AzanReminder";
+import ErrorBoundary from "./components/Common/ErrorBoundary";
 
 // Lazy-loaded Pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -37,36 +38,29 @@ const HijriCalendarPage = lazy(() => import("./pages/HijriCalendarPage"));
 
 function AnimatedRoutes() {
   const location = useLocation();
-  const { user } = useAuth();
+  const routeGroupKey = location.pathname.split("/")[1] || "home";
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        {!user ? (
-          <>
-            <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-            <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
-            <Route path="*" element={<PageTransition><LoginPage /></PageTransition>} />
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<PageTransition><Dashboard /></PageTransition>} />
-            <Route path="/quran" element={<PageTransition><QuranIndex /></PageTransition>} />
-            <Route path="/surat/:nomor" element={<PageTransition><DetailSurat /></PageTransition>} />
-            <Route path="/favorit" element={<PageTransition><Favorit /></PageTransition>} />
-            <Route path="/tasbih" element={<PageTransition><TasbihPage /></PageTransition>} />
-            <Route path="/prayer" element={<PageTransition><PrayerPage /></PageTransition>} />
-            <Route path="/calendar" element={<PageTransition><HijriCalendarPage /></PageTransition>} />
-            <Route path="/qibla" element={<PageTransition><QiblaPage /></PageTransition>} />
-            <Route path="/azan-settings" element={<PageTransition><AzanSettings /></PageTransition>} />
-            <Route path="/dzikir" element={<PageTransition><DzikirPage /></PageTransition>} />
-            <Route path="/dua" element={<PageTransition><DailyDuaPage /></PageTransition>} />
-            <Route path="/bookmark" element={<PageTransition><BookmarkPage /></PageTransition>} />
-            <Route path="/progress" element={<PageTransition><ProgressPage /></PageTransition>} />
-            <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
-            <Route path="*" element={<PageTransition><ComingSoon title="Halaman Tidak Ditemukan" /></PageTransition>} />
-          </>
-        )}
+      <Routes location={location} key={routeGroupKey}>
+        <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+        
+        <Route path="/" element={<PageTransition><Dashboard /></PageTransition>} />
+        <Route path="/quran" element={<PageTransition><QuranIndex /></PageTransition>} />
+        <Route path="/surat/:nomor" element={<PageTransition><DetailSurat /></PageTransition>} />
+        <Route path="/favorit" element={<PageTransition><Favorit /></PageTransition>} />
+        <Route path="/tasbih" element={<PageTransition><TasbihPage /></PageTransition>} />
+        <Route path="/prayer" element={<PageTransition><PrayerPage /></PageTransition>} />
+        <Route path="/calendar" element={<PageTransition><HijriCalendarPage /></PageTransition>} />
+        <Route path="/qibla" element={<PageTransition><QiblaPage /></PageTransition>} />
+        <Route path="/azan-settings" element={<PageTransition><AzanSettings /></PageTransition>} />
+        <Route path="/dzikir" element={<PageTransition><DzikirPage /></PageTransition>} />
+        <Route path="/dua" element={<PageTransition><DailyDuaPage /></PageTransition>} />
+        <Route path="/bookmark" element={<PageTransition><BookmarkPage /></PageTransition>} />
+        <Route path="/progress" element={<PageTransition><ProgressPage /></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
+        <Route path="*" element={<PageTransition><ComingSoon title="Halaman Tidak Ditemukan" /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
@@ -74,24 +68,29 @@ function AnimatedRoutes() {
 
 function MainApp() {
   const { user } = useAuth();
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const showLayout = user && !isAuthPage;
   
   return (
     <>
-      {user && <AzanReminder />}
+      {showLayout && <AzanReminder />}
       <div className={`min-h-screen flex flex-col md:flex-row relative bg-noor-bg text-noor-dark transition-colors duration-500`}>
         <div className="absolute inset-0 islamic-pattern opacity-10 pointer-events-none z-0"></div>
         {/* Sidebar / Bottom Tab Navigation */}
-        {user && <Navbar />}
+        {showLayout && <Navbar />}
 
         {/* Main Content Area */}
-        <main className={`flex-1 ${user ? "md:ml-[285px]" : ""} min-h-screen p-4 md:p-8 overflow-y-auto overflow-x-hidden relative`}>
-          <Suspense fallback={<div className="h-screen flex items-center justify-center"><Loader label="Memuat..." /></div>}>
-            <AnimatedRoutes />
-          </Suspense>
+        <main className={`flex-1 ${showLayout ? "md:ml-[285px]" : ""} min-h-screen p-4 md:p-8 overflow-y-auto overflow-x-hidden relative`}>
+          <ErrorBoundary>
+            <Suspense fallback={<div className="h-screen flex items-center justify-center"><Loader label="Memuat..." /></div>}>
+              <AnimatedRoutes />
+            </Suspense>
+          </ErrorBoundary>
         </main>
 
         {/* Global floating Audio Console */}
-        {user && <AudioPlayer />}
+        {showLayout && <AudioPlayer />}
 
         {/* Toast Notifications */}
         <Toaster

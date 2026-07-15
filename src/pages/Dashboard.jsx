@@ -113,6 +113,8 @@ function Dashboard() {
         
         {/* Daily Verse + Launcher Panel */}
         <div className="md:col-span-2 bg-gradient-to-br from-noor-dark to-noor-light text-[#F6EFE4] rounded-noor p-5 border border-noor-gold/25 shadow-noor-heavy flex flex-col justify-between relative overflow-hidden">
+          <div className="islamic-corner-ornament islamic-corner-tl"></div>
+          <div className="islamic-corner-ornament islamic-corner-tr"></div>
           {/* Subtle star motif overlay */}
           <div className="absolute right-[-10px] top-[-10px] w-24 h-24 opacity-[0.05] text-noor-gold pointer-events-none">
             <svg viewBox="0 0 100 100" fill="currentColor">
@@ -174,8 +176,26 @@ function Dashboard() {
                 {lastRead.namaSurah}
               </h4>
               <p className="text-xs text-[#7A5845] font-semibold mt-1">
-                Ayat Ke-{lastRead.nomorAyat}
+                Ayat Ke-{lastRead.nomorAyat} {lastRead.jumlahAyat && `dari ${lastRead.jumlahAyat}`}
               </p>
+
+              {lastRead.jumlahAyat && (
+                <div className="mt-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] text-noor-textSecondary font-bold">Progress Membaca</span>
+                    <span className="text-[10px] text-noor-gold font-bold">
+                      {Math.round((lastRead.nomorAyat / lastRead.jumlahAyat) * 100)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-noor-divider/50 h-1.5 rounded-full overflow-hidden shadow-inner">
+                    <div 
+                      className="bg-noor-gold h-full transition-all duration-500 ease-out"
+                      style={{ width: `${Math.round((lastRead.nomorAyat / lastRead.jumlahAyat) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
               <p className="text-[9px] text-[#7A5845]/40 mt-3 font-mono">
                 Dibaca pada: {new Date(lastRead.timestamp).toLocaleDateString("id-ID")}
               </p>

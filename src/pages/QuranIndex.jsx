@@ -44,6 +44,7 @@ const JUZ_MAPPING = [
 function QuranIndex() {
   const [surahs, setSurahs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("semua"); // semua, makkiyah, madaniyah, juz
 
@@ -56,9 +57,12 @@ function QuranIndex() {
         const res = await axios.get("https://equran.id/api/v2/surat");
         if (res.data?.data) {
           setSurahs(res.data.data);
+        } else {
+          setError("Data surat tidak valid dari server.");
         }
       } catch (err) {
         console.error("Gagal mengambil data katalog surah:", err);
+        setError("Gagal terhubung ke server. Periksa koneksi internet Anda.");
       } finally {
         setLoading(false);
       }
@@ -100,7 +104,52 @@ function QuranIndex() {
   };
 
   if (loading) {
-    return <Loader label="Memuat Al-Qur'an..." />;
+    return (
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8">
+        <div className="bg-noor-card border border-noor-divider rounded-noor p-6 md:p-8 mb-8 shadow-sm">
+          <div className="w-48 h-4 bg-noor-divider/40 rounded-full animate-pulse mb-3"></div>
+          <div className="w-3/4 h-8 bg-noor-divider/40 rounded-full animate-pulse mb-2"></div>
+          <div className="w-1/2 h-4 bg-noor-divider/40 rounded-full animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+            <div key={i} className="bg-noor-card border border-noor-divider rounded-noor p-5 flex flex-col justify-between">
+              <div className="flex justify-between items-start mb-3">
+                <div className="w-10 h-10 bg-noor-divider/40 rounded-xl animate-pulse"></div>
+                <div className="w-16 h-8 bg-noor-divider/40 rounded-lg animate-pulse"></div>
+              </div>
+              <div className="mb-4 space-y-2">
+                <div className="w-3/4 h-6 bg-noor-divider/40 rounded-full animate-pulse"></div>
+                <div className="w-1/2 h-3 bg-noor-divider/40 rounded-full animate-pulse"></div>
+                <div className="w-1/3 h-3 bg-noor-divider/40 rounded-full animate-pulse mt-2"></div>
+              </div>
+              <div className="border-t border-noor-divider/60 my-2"></div>
+              <div className="flex items-center justify-between mt-2 pt-1">
+                <div className="flex gap-2">
+                  <div className="w-20 h-8 bg-noor-divider/40 rounded-xl animate-pulse"></div>
+                  <div className="w-10 h-8 bg-noor-divider/40 rounded-xl animate-pulse"></div>
+                </div>
+                <div className="w-10 h-10 bg-noor-divider/40 rounded-xl animate-pulse"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+          <span className="text-red-500 font-bold text-2xl">!</span>
+        </div>
+        <p className="text-red-500 font-bold mb-4">{error}</p>
+        <button onClick={() => window.location.reload()} className="px-6 py-2 bg-noor-gold text-white font-bold rounded-xl hover:bg-[#967135] transition-colors shadow-md">
+          Coba Lagi
+        </button>
+      </div>
+    );
   }
 
   return (

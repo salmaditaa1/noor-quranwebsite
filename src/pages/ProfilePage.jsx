@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
-import { User, Settings, Palette, Type, Check, LogOut, Bell, Edit3, Save, X, Camera } from "lucide-react";
+import { User, Settings, RefreshCw, Type, Check, LogOut, Bell, Edit3, Save, X, Camera } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
-
-const THEMES = [
-  { id: "cream", name: "Premium Cream", color: "bg-[#F6EFE4]" },
-  { id: "mahogany", name: "Mahogany Dark", color: "bg-[#2C0F12]" },
-  { id: "gold", name: "Dark Gold", color: "bg-[#B58A44]" }
-];
 
 const ARABIC_FONTS = [
   { id: "amiri", name: "Amiri (Kemenag)" },
@@ -29,6 +23,7 @@ function ProfilePage() {
 
   const { user, updateProfile, logout } = useAuth();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [editForm, setEditForm] = useState({ 
     name: user?.name || "", 
     email: user?.email || "", 
@@ -42,10 +37,34 @@ function ProfilePage() {
   const updatePreference = (key, value) => {
     setPreferences(prev => ({ ...prev, [key]: value }));
     toast.success("Preferensi disimpan");
-    
-    if (key === "theme") {
-      // Dispatch a custom event so App.jsx knows the theme changed
-      window.dispatchEvent(new Event('themeChange'));
+  };
+
+  const handleGoogleSync = () => {
+    setIsSyncing(true);
+    const toastId = toast.loading("Menghubungkan dengan akun Google...");
+    setTimeout(() => {
+      updateProfile({
+        name: "Ahmad Fajar",
+        email: "ahmad.fajar@gmail.com",
+        isGuest: false,
+        city: user?.city || "Jakarta",
+        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
+      });
+      setIsSyncing(false);
+      toast.success("Akun berhasil disinkronisasi dengan Google!", { id: toastId });
+    }, 1500);
+  };
+
+  const handleDisconnectSync = () => {
+    if (window.confirm("Apakah Anda yakin ingin memutuskan sinkronisasi? Data Anda akan tetap disimpan secara lokal.")) {
+      updateProfile({
+        name: "Tamu Noor",
+        email: "tamu@noor.id",
+        isGuest: true,
+        city: user?.city || "Jakarta",
+        photo: null
+      });
+      toast.success("Koneksi Google diputuskan.");
     }
   };
 
@@ -158,33 +177,7 @@ function ProfilePage() {
         {/* Settings Form */}
         <div className="md:col-span-2 space-y-6">
           
-          {/* Tampilan & Tema */}
-          <div className="bg-white border border-noor-divider rounded-2xl p-6 shadow-sm">
-            <h3 className="font-extrabold text-noor-dark flex items-center gap-2 mb-6 border-b border-noor-divider/50 pb-3">
-              <Palette className="w-5 h-5 text-noor-gold" />
-              Tampilan & Tema
-            </h3>
-            
-            <div className="mb-6">
-              <label className="block text-sm font-bold text-noor-textSecondary mb-3">Tema Aplikasi</label>
-              <div className="flex gap-3">
-                {THEMES.map(t => (
-                  <button 
-                    key={t.id}
-                    onClick={() => updatePreference("theme", t.id)}
-                    className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all ${
-                      preferences.theme === t.id ? "bg-noor-gold/10 ring-1 ring-noor-gold" : "hover:bg-gray-50 opacity-70"
-                    }`}
-                  >
-                    <div className={`w-12 h-12 rounded-full shadow-inner border border-black/10 flex items-center justify-center ${t.color}`}>
-                      {preferences.theme === t.id && <Check className={t.id === "cream" ? "text-noor-dark" : "text-white"} />}
-                    </div>
-                    <span className="text-[10px] font-bold text-noor-dark text-center">{t.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+
 
           {/* Pengaturan Membaca */}
           <div className="bg-white border border-noor-divider rounded-2xl p-6 shadow-sm">
@@ -238,6 +231,47 @@ function ProfilePage() {
 
         {/* Sidebar Settings */}
         <div className="md:col-span-1 space-y-6">
+          {/* Google Sync Card */}
+          <div className="bg-white border border-noor-divider rounded-2xl p-6 shadow-sm">
+            <h3 className="font-extrabold text-noor-dark flex items-center gap-2 mb-4 border-b border-noor-divider/50 pb-3">
+              <RefreshCw className="w-5 h-5 text-noor-gold" />
+              Sinkronisasi Akun
+            </h3>
+            {user?.isGuest ? (
+              <div className="text-center py-2">
+                <p className="text-xs text-noor-textSecondary leading-relaxed mb-4">
+                  Anda saat ini menggunakan profil lokal. Hubungkan akun Anda untuk mencadangkan bookmark, catatan, dan kemajuan ibadah ke Google Cloud.
+                </p>
+                <button
+                  onClick={handleGoogleSync}
+                  disabled={isSyncing}
+                  className="w-full py-2.5 bg-white border border-noor-divider text-noor-dark font-bold text-xs rounded-xl hover:bg-noor-gold/10 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.1A13.25 13.25 0 0 0 12.24 0C5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.89 11.57-11.79 0-.795-.085-1.4-.19-1.925H12.24z"/>
+                  </svg>
+                  <span>Hubungkan dengan Google</span>
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-2">
+                <div className="flex items-center justify-center gap-2 bg-green-50 text-green-700 border border-green-200 rounded-xl p-3 mb-4 text-xs font-semibold">
+                  <Check className="w-4 h-4" />
+                  <span>Tersinkronisasi dengan Google</span>
+                </div>
+                <p className="text-[10px] text-noor-textSecondary mb-4">
+                  Akun: <strong>{user?.email}</strong>
+                </p>
+                <button
+                  onClick={handleDisconnectSync}
+                  className="w-full py-2 bg-red-50 text-red-600 rounded-xl font-bold text-xs hover:bg-red-100 transition-colors"
+                >
+                  Putus Sinkronisasi
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="bg-white border border-noor-divider rounded-2xl p-6 shadow-sm">
             <h3 className="font-extrabold text-noor-dark flex items-center gap-2 mb-4 border-b border-noor-divider/50 pb-3">
               <Settings className="w-5 h-5 text-noor-gold" />

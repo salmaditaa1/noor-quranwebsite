@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Howl } from "howler";
 import {
   ChevronLeft,
@@ -13,8 +13,6 @@ import {
   Play,
   Pause,
   Settings,
-  Eye,
-  EyeOff,
   Type,
   AlignLeft,
   X,
@@ -63,21 +61,14 @@ function DetailSurat() {
   } = useAppSettings();
   const { playSurahAudio, togglePlay, activeSurah, isPlaying, activeReciter } = useAudio();
   const { addActivity } = useActivity();
-  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Scroll Progress Listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
-      const scrollPercent = scrollTop / (docHeight - winHeight);
-      setScrollProgress(scrollPercent * 100);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Framer Motion scroll progress (updates style directly without causing re-renders)
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   // Load Surah details
   useEffect(() => {
@@ -95,6 +86,7 @@ function DetailSurat() {
             surahNomor: res.data.data.nomor,
             namaSurah: res.data.data.namaLatin,
             nomorAyat: 1,
+            jumlahAyat: res.data.data.jumlahAyat,
             timestamp: Date.now()
           }));
           
@@ -118,9 +110,38 @@ function DetailSurat() {
       active = false;
       stopVerseAudio();
     };
-  }, [nomor]);
+  }, [nomor, addActivity]);
 
-  if (loading) return <Loader label="Memuat Ayat..." />;
+  const isInitialLoading = loading && !detail;
+  const isDetailTransitioning = loading && detail;
+
+  if (isInitialLoading) return (
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8 relative space-y-6">
+      {/* Sticky Header Skeleton */}
+      <div className="bg-noor-card p-4 md:p-6 rounded-2xl border border-noor-divider shadow-sm sticky top-0 z-40">
+        <div className="flex justify-between items-center">
+          <div className="w-24 h-8 bg-noor-divider/40 rounded-lg animate-pulse"></div>
+          <div className="w-1/3 h-8 bg-noor-divider/40 rounded-full animate-pulse"></div>
+          <div className="w-24 h-8 bg-noor-divider/40 rounded-lg animate-pulse"></div>
+        </div>
+      </div>
+      {/* Verses Skeleton */}
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="bg-noor-card p-5 md:p-6 rounded-2xl border border-noor-divider space-y-4">
+          <div className="flex justify-between items-center mb-6">
+            <div className="w-12 h-12 bg-noor-divider/40 rounded-full animate-pulse"></div>
+            <div className="w-24 h-8 bg-noor-divider/40 rounded-xl animate-pulse"></div>
+          </div>
+          <div className="w-full h-12 bg-noor-divider/40 rounded-full animate-pulse"></div>
+          <div className="w-3/4 h-12 bg-noor-divider/40 rounded-full animate-pulse self-end ml-auto"></div>
+          <div className="border-t border-noor-divider/60 pt-4 mt-6">
+            <div className="w-full h-4 bg-noor-divider/40 rounded-full animate-pulse mb-2"></div>
+            <div className="w-5/6 h-4 bg-noor-divider/40 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
   if (error) return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
       <p className="text-red-500 font-bold mb-4">{error}</p>
@@ -134,7 +155,7 @@ function DetailSurat() {
   const nextSurahNum = surahNum < 114 ? surahNum + 1 : null;
 
   // Verse playback controller
-  const playVerseAudio = (ayat) => {
+  function playVerseAudio(ayat) {
     stopVerseAudio();
 
     const audioUrl = ayat.audio[activeReciter];
@@ -173,16 +194,16 @@ function DetailSurat() {
 
     sound.play();
     verseHowlRef.current = sound;
-  };
+  }
 
-  const stopVerseAudio = () => {
+  function stopVerseAudio() {
     if (verseHowlRef.current) {
       verseHowlRef.current.stop();
       verseHowlRef.current.unload();
       verseHowlRef.current = null;
     }
     setPlayingVerse(null);
-  };
+  }
 
   // Load Tafsir data
   const handleOpenTafsir = async (verseNum) => {
@@ -229,15 +250,15 @@ function DetailSurat() {
   const getArabicTextClass = () => {
     const prefFont = appPreferences?.arabicFont || arabicFont;
     const font = prefFont === "amiri" ? "font-serif" : "font-arabic";
-    let size = "";
+    let sizeClass = "";
     switch (textSize) {
-      case "md": size = "text-2xl"; break;
-      case "lg": size = "text-3xl md:text-4xl"; break;
-      case "xl": size = "text-4xl md:text-5xl"; break;
-      case "2xl": size = "text-5xl md:text-6xl"; break;
-      default: size = "text-3xl md:text-4xl"; break;
+      case "md": sizeClass = "text-2xl"; break;
+      case "lg": sizeClass = "text-3xl md:text-4xl"; break;
+      case "xl": sizeClass = "text-4xl md:text-5xl"; break;
+      case "2xl": sizeClass = "text-5xl md:text-6xl"; break;
+      default: sizeClass = "text-3xl md:text-4xl"; break;
     }
-    return `${font} ${size}`;
+    return `${font} ${sizeClass}`;
   };
 
   const getTafsirContent = () => {
@@ -250,11 +271,19 @@ function DetailSurat() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-8 relative">
+      {isDetailTransitioning && (
+        <div className="absolute inset-0 z-50 bg-noor-dark/10 flex items-center justify-center rounded-2xl">
+          <div className="bg-white/95 border border-noor-divider rounded-2xl p-5 shadow-lg flex items-center gap-3">
+            <div className="w-8 h-8 border-4 border-noor-gold border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-sm font-bold text-noor-dark">Memuat surah berikutnya...</span>
+          </div>
+        </div>
+      )}
       {/* Sticky Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1.5 bg-noor-divider z-50 md:ml-[285px]">
-        <div 
-          className="h-full bg-noor-gold transition-all duration-100 ease-out"
-          style={{ width: `${scrollProgress}%` }}
+        <motion.div 
+          className="h-full bg-noor-gold origin-left"
+          style={{ scaleX }}
         />
       </div>
       
@@ -298,6 +327,8 @@ function DetailSurat() {
 
       {/* Surah Banner */}
       <div className="bg-gradient-to-br from-noor-dark to-noor-light text-[#F6EFE4] rounded-noor p-6 md:p-8 mb-6 border border-noor-gold/20 shadow-noor-heavy text-center relative overflow-hidden">
+        <div className="islamic-corner-ornament islamic-corner-tl"></div>
+        <div className="islamic-corner-ornament islamic-corner-tr"></div>
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-noor-gold via-transparent to-transparent pointer-events-none"></div>
 
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide font-sans">{detail.namaLatin}</h1>
@@ -455,132 +486,138 @@ function DetailSurat() {
           const isPlayingThisVerse = playingVerse === ayat.nomorAyat;
 
           return (
-            <motion.div
-              key={ayat.nomorAyat}
-              id={`ayat-${ayat.nomorAyat}`}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(index * 0.05, 0.5) }}
-              className={`bg-noor-card border rounded-noor p-5 md:p-6 transition-all duration-300 relative ${
-                isPlayingThisVerse
-                  ? "border-noor-gold ring-2 ring-noor-gold/40 bg-noor-gold/5 shadow-noor-lg scale-[1.01]"
-                  : isLastRead
-                  ? "border-noor-gold ring-1 ring-noor-gold/30 shadow-noor-warm"
-                  : "border-noor-divider hover:border-noor-gold/50 shadow-noor-sm"
-              }`}
-            >
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                
-                {/* Verse Number & Action Buttons */}
-                <div className="flex md:flex-col items-center gap-2 w-full md:w-auto border-b md:border-b-0 border-noor-divider/40 pb-3 md:pb-0">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-noor-light to-noor-dark text-[#F6EFE4] flex items-center justify-center font-bold text-xs shadow-md border border-noor-gold/20">
-                    {ayat.nomorAyat}
+            <div key={ayat.nomorAyat}>
+              <motion.div
+                id={`ayat-${ayat.nomorAyat}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(index * 0.05, 0.5) }}
+                className={`bg-noor-card border rounded-noor p-5 md:p-6 transition-all duration-300 relative ${
+                  isPlayingThisVerse
+                    ? "border-noor-gold ring-2 ring-noor-gold/40 bg-noor-gold/5 shadow-noor-lg scale-[1.01]"
+                    : isLastRead
+                    ? "border-noor-gold ring-1 ring-noor-gold/30 shadow-noor-warm"
+                    : "border-noor-divider hover:border-noor-gold/50 shadow-noor-sm"
+                }`}
+              >
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                  
+                  {/* Verse Number & Action Buttons */}
+                  <div className="flex md:flex-col items-center gap-2 w-full md:w-auto border-b md:border-b-0 border-noor-divider/40 pb-3 md:pb-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-noor-light to-noor-dark text-[#F6EFE4] flex items-center justify-center font-bold text-xs shadow-md border border-noor-gold/20">
+                      {ayat.nomorAyat}
+                    </div>
+
+                    <div className="flex md:flex-col gap-1.5 ml-auto md:ml-0 md:mt-4">
+                      {/* Play Specific Verse */}
+                      <button
+                        onClick={() => isPlayingThisVerse ? stopVerseAudio() : playVerseAudio(ayat)}
+                        className={`p-2 rounded-xl transition-all duration-200 ${
+                          isPlayingThisVerse
+                            ? "bg-noor-gold text-white"
+                            : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
+                        }`}
+                        title={isPlayingThisVerse ? "Pause Ayat" : "Putar Ayat"}
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Bookmark Verse */}
+                      <button
+                        onClick={() =>
+                          toggleBookmarkVerse({
+                            surahNomor: detail.nomor,
+                            surahName: detail.namaLatin,
+                            nomorAyat: ayat.nomorAyat,
+                            teksArab: ayat.teksArab,
+                            teksLatin: ayat.teksLatin,
+                            teksIndonesia: ayat.teksIndonesia
+                          })
+                        }
+                        className={`p-2 rounded-xl transition-all duration-200 ${
+                          bookmarked
+                            ? "bg-noor-gold text-[#F6EFE4]"
+                            : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
+                        }`}
+                        title="Bookmark Ayat"
+                      >
+                        <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? "fill-current" : ""}`} />
+                      </button>
+
+                      {/* Open Tafsir */}
+                      <button
+                        onClick={() => handleOpenTafsir(ayat.nomorAyat)}
+                        className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all text-xs font-bold"
+                        title="Tafsir Ayat"
+                      >
+                        Tafsir
+                      </button>
+
+                      {/* Mark as Last Read */}
+                      <button
+                        onClick={() => updateLastRead(detail.nomor, detail.namaLatin, ayat.nomorAyat, detail.jumlahAyat)}
+                        className={`p-2 rounded-xl transition-all duration-200 ${
+                          isLastRead
+                            ? "bg-noor-gold text-white"
+                            : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
+                        }`}
+                        title="Tandai Terakhir Dibaca"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Copy/Share */}
+                      <button
+                        onClick={() => handleCopyVerse(ayat)}
+                        className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all"
+                        title="Salin"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                      
+                      <button
+                        onClick={() => handleShareVerse(ayat)}
+                        className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all"
+                        title="Bagikan"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="flex md:flex-col gap-1.5 ml-auto md:ml-0 md:mt-4">
-                    {/* Play Specific Verse */}
-                    <button
-                      onClick={() => isPlayingThisVerse ? stopVerseAudio() : playVerseAudio(ayat)}
-                      className={`p-2 rounded-xl transition-all duration-200 ${
-                        isPlayingThisVerse
-                          ? "bg-noor-gold text-white"
-                          : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
-                      }`}
-                      title={isPlayingThisVerse ? "Pause Ayat" : "Putar Ayat"}
+                  {/* Arabic Script & Translation details */}
+                  <div className="flex-1 text-right pl-0 md:pl-6 w-full">
+                    <p 
+                      className={`leading-[2.4] text-noor-dark select-all ${getArabicTextClass()}`}
+                      style={{ 
+                        fontSize: appPreferences?.arabicFontSize ? `${appPreferences.arabicFontSize}px` : undefined,
+                        fontFamily: appPreferences?.arabicFont === "amiri" ? "'Amiri', serif" : undefined
+                      }}
                     >
-                      <Volume2 className="w-3.5 h-3.5" />
-                    </button>
+                      {ayat?.teksArab || ""}
+                    </p>
 
-                    {/* Bookmark Verse */}
-                    <button
-                      onClick={() =>
-                        toggleBookmarkVerse({
-                          surahNomor: detail.nomor,
-                          surahName: detail.namaLatin,
-                          nomorAyat: ayat.nomorAyat,
-                          teksArab: ayat.teksArab,
-                          teksLatin: ayat.teksLatin,
-                          teksIndonesia: ayat.teksIndonesia
-                        })
-                      }
-                      className={`p-2 rounded-xl transition-all duration-200 ${
-                        bookmarked
-                          ? "bg-noor-gold text-[#F6EFE4]"
-                          : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
-                      }`}
-                      title="Bookmark Ayat"
-                    >
-                      <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? "fill-current" : ""}`} />
-                    </button>
+                    {showLatin && (
+                      <p className="text-left text-xs md:text-sm text-noor-gold font-medium italic mt-4 select-text leading-relaxed">
+                        {ayat.teksLatin}
+                      </p>
+                    )}
 
-                    {/* Open Tafsir */}
-                    <button
-                      onClick={() => handleOpenTafsir(ayat.nomorAyat)}
-                      className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all text-xs font-bold"
-                      title="Tafsir Ayat"
-                    >
-                      Tafsir
-                    </button>
-
-                    {/* Mark as Last Read */}
-                    <button
-                      onClick={() => updateLastRead(detail.nomor, detail.namaLatin, ayat.nomorAyat)}
-                      className={`p-2 rounded-xl transition-all duration-200 ${
-                        isLastRead
-                          ? "bg-noor-gold text-white"
-                          : "bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80"
-                      }`}
-                      title="Tandai Terakhir Dibaca"
-                    >
-                      <BookOpen className="w-3.5 h-3.5" />
-                    </button>
-
-                    {/* Copy/Share */}
-                    <button
-                      onClick={() => handleCopyVerse(ayat)}
-                      className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all"
-                      title="Salin"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
-                    
-                    <button
-                      onClick={() => handleShareVerse(ayat)}
-                      className="p-2 rounded-xl bg-white text-noor-textSecondary hover:bg-noor-gold/15 border border-noor-divider/80 transition-all"
-                      title="Bagikan"
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                    </button>
+                    {showTranslation && (
+                      <p className="text-left text-sm text-[#7A5845]/90 font-medium mt-3 select-text leading-relaxed border-t border-noor-divider/20 pt-3">
+                        {ayat.teksIndonesia}
+                      </p>
+                    )}
                   </div>
+
                 </div>
-
-                {/* Arabic Script & Translation details */}
-                <div className="flex-1 text-right pl-0 md:pl-6 w-full">
-                  <p 
-                    className={`leading-[2.4] text-noor-dark select-all ${getArabicTextClass()}`}
-                    style={{ 
-                      fontSize: appPreferences?.arabicFontSize ? `${appPreferences.arabicFontSize}px` : undefined,
-                      fontFamily: appPreferences?.arabicFont === "amiri" ? "'Amiri', serif" : undefined
-                    }}
-                  >
-                    {ayat?.teksArab || ""}
-                  </p>
-
-                  {showLatin && (
-                    <p className="text-left text-xs md:text-sm text-noor-gold font-medium italic mt-4 select-text leading-relaxed">
-                      {ayat.teksLatin}
-                    </p>
-                  )}
-
-                  {showTranslation && (
-                    <p className="text-left text-sm text-[#7A5845]/90 font-medium mt-3 select-text leading-relaxed border-t border-noor-divider/20 pt-3">
-                      {ayat.teksIndonesia}
-                    </p>
-                  )}
+              </motion.div>
+              {index < detail.ayat.length - 1 && (
+                <div className="islamic-divider-gold my-5">
+                  <div className="islamic-divider-gold-star"></div>
                 </div>
-
-              </div>
-            </motion.div>
+              )}
+            </div>
           );
         })}
       </div>

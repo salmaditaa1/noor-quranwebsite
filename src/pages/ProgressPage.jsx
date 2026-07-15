@@ -12,17 +12,60 @@ function ProgressPage() {
   const stats = useMemo(() => {
     let quranPages = 0;
     let dhikrCount = 0;
+    let prayersCount = 0;
 
     activities.forEach(a => {
-      if (a.type === "quran") quranPages++;
-      if (a.type === "dzikir" || a.type === "tasbih") dhikrCount++;
+      if (a.type === "quran" || a.type === "quran_target") quranPages++;
+      if (a.type === "dzikir" || a.type === "tasbih" || a.type === "dzikir_target") dhikrCount++;
+      if (a.type === "prayer") prayersCount++;
     });
 
+    // Calculate streak (consecutive days of any activity)
+    let currentStreak = 0;
+    if (activities.length > 0) {
+      const dates = new Set(activities.map(a => new Date(a.timestamp).toDateString()));
+      let checkDate = new Date();
+      
+      if (dates.has(checkDate.toDateString())) {
+        currentStreak++;
+        while (true) {
+          checkDate.setDate(checkDate.getDate() - 1);
+          if (dates.has(checkDate.toDateString())) {
+            currentStreak++;
+          } else {
+            break;
+          }
+        }
+      } else {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (dates.has(yesterday.toDateString())) {
+          currentStreak++;
+          checkDate = yesterday;
+          while (true) {
+            checkDate.setDate(checkDate.getDate() - 1);
+            if (dates.has(checkDate.toDateString())) {
+              currentStreak++;
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    // Compute today's prayer checklist percentage
+    const todayStr = new Date().toDateString();
+    const todayPrayers = activities.filter(
+      a => a.type === "prayer" && new Date(a.timestamp).toDateString() === todayStr
+    ).length;
+    const prayersOnTimePercent = todayPrayers > 0 ? `${Math.min(100, Math.round((todayPrayers / 5) * 100))}%` : "0%";
+
     return {
-      streak: 1, // simplified for now
+      streak: currentStreak || 1, // Default to 1 if first activity
       quranPages,
       dhikrCount,
-      prayersOnTime: "100%"
+      prayersOnTime: prayersOnTimePercent
     };
   }, [activities]);
 

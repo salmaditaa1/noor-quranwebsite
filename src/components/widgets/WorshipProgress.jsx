@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CheckSquare, Square, Award, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
+import { useActivity } from "../../context/ActivityContext";
 
 const INITIAL_TASKS = [
   { id: "subuh", label: "Sholat Subuh", category: "prayer" },
@@ -14,6 +15,7 @@ const INITIAL_TASKS = [
 
 function WorshipProgress() {
   const [completedTasks, setCompletedTasks] = useState([]);
+  const { addActivity } = useActivity();
   
   // Date tracking to reset state on a new day
   const getTodayKey = () => {
@@ -48,6 +50,30 @@ function WorshipProgress() {
         updated = [...prev, taskId];
         toast.success(`Alhamdulillah, tugas ibadah selesai! ✨`);
         
+        // Log activity dynamically
+        const taskObj = INITIAL_TASKS.find(t => t.id === taskId);
+        if (taskObj) {
+          if (taskObj.category === "prayer") {
+            addActivity({
+              type: "prayer",
+              title: "Sholat Fardhu",
+              description: `Menunaikan ${taskObj.label}`
+            });
+          } else if (taskObj.category === "quran") {
+            addActivity({
+              type: "quran_target",
+              title: "Target Tilawah Harian",
+              description: "Menyelesaikan target membaca Al-Qur'an harian"
+            });
+          } else if (taskObj.category === "dzikir") {
+            addActivity({
+              type: "dzikir_target",
+              title: "Target Dzikir Harian",
+              description: "Menyelesaikan target membaca dzikir harian"
+            });
+          }
+        }
+
         // Dynamic feedback if all prayers are completed
         const prayersCount = updated.filter(id => id.startsWith("subuh") || id.startsWith("dzuhur") || id.startsWith("ashar") || id.startsWith("maghrib") || id.startsWith("isya")).length;
         if (prayersCount === 5 && !prev.includes(taskId) && taskId !== "quran" && taskId !== "dzikir") {

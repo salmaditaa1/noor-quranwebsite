@@ -137,8 +137,8 @@ export function AppSettingsProvider({ children }) {
     );
   };
 
-  const updateLastRead = (surahNomor, namaSurah, nomorAyat) => {
-    const data = { surahNomor, namaSurah, nomorAyat, timestamp: Date.now() };
+  const updateLastRead = (surahNomor, namaSurah, nomorAyat, jumlahAyat) => {
+    const data = { surahNomor, namaSurah, nomorAyat, jumlahAyat, timestamp: Date.now() };
     setLastRead(data);
     toast.success(`Terakhir Dibaca: Surah ${namaSurah} ayat ${nomorAyat}`);
   };

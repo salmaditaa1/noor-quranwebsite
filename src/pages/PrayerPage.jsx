@@ -257,7 +257,7 @@ function PrayerPage() {
                     </span>
                   </div>
                   <span className={`text-sm font-extrabold ${active ? "text-noor-dark text-base" : "text-noor-dark/80"}`}>
-                    {prayerTimes[pr.key] || "-"}
+                    {prayerTimes?.[pr.key] || "-"}
                   </span>
                 </div>
               );

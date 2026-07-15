@@ -5,7 +5,22 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("noor-user")) || null;
+    const saved = localStorage.getItem("noor-user");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // Fall through
+      }
+    }
+    return {
+      id: "guest",
+      name: "Tamu Noor",
+      email: "tamu@noor.id",
+      city: "JAKARTA",
+      photo: null,
+      isGuest: true
+    };
   });
 
   useEffect(() => {
@@ -50,19 +65,28 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setUser(null);
-    toast.success("Berhasil keluar akun.");
+    setUser({
+      id: "guest",
+      name: "Tamu Noor",
+      email: "tamu@noor.id",
+      city: "JAKARTA",
+      photo: null,
+      isGuest: true
+    });
+    toast.success("Berhasil keluar akun. Menggunakan profil lokal.");
   };
 
   const updateProfile = (updates) => {
     setUser(prev => {
       const updated = { ...prev, ...updates };
-      // Also update in mock DB
-      const users = JSON.parse(localStorage.getItem("noor-users-db")) || [];
-      const idx = users.findIndex(u => u.id === updated.id);
-      if (idx !== -1) {
-        users[idx] = { ...users[idx], ...updates };
-        localStorage.setItem("noor-users-db", JSON.stringify(users));
+      if (!prev.isGuest) {
+        // Also update in mock DB
+        const users = JSON.parse(localStorage.getItem("noor-users-db")) || [];
+        const idx = users.findIndex(u => u.id === updated.id);
+        if (idx !== -1) {
+          users[idx] = { ...users[idx], ...updates };
+          localStorage.setItem("noor-users-db", JSON.stringify(users));
+        }
       }
       return updated;
     });

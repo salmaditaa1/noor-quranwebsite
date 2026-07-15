@@ -2,25 +2,20 @@ import { useState, useEffect } from "react";
 import { Bookmark, BookOpen, Sparkles, PenTool, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAppSettings } from "../context/AppSettingsContext";
 
 function BookmarkPage() {
   const [activeTab, setActiveTab] = useState("ayat"); // "ayat" | "doa" | "catatan"
-
-  const [ayatBookmarks, setAyatBookmarks] = useState([]);
-  const [doaBookmarks, setDoaBookmarks] = useState([]);
+  const { bookmarkedVerses, toggleBookmarkVerse } = useAppSettings();
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
 
-  useEffect(() => {
-    // Load data from localStorage (dummy initial for demonstration if empty)
-    const savedAyat = JSON.parse(localStorage.getItem("noor_ayat_bookmarks")) || [
-      { id: 1, surah: "Al-Fatihah", number: 1, verse: 1, arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", date: "2026-06-12" }
-    ];
-    const savedDoa = JSON.parse(localStorage.getItem("noor_doa_bookmarks")) || [];
-    const savedNotes = JSON.parse(localStorage.getItem("noor_notes")) || [];
+  const ayatBookmarks = bookmarkedVerses.filter(item => item.surahNomor !== "dua");
+  const doaBookmarks = bookmarkedVerses.filter(item => item.surahNomor === "dua");
 
-    setAyatBookmarks(savedAyat);
-    setDoaBookmarks(savedDoa);
+  useEffect(() => {
+    // Load notes from localStorage
+    const savedNotes = JSON.parse(localStorage.getItem("noor_notes")) || [];
     setNotes(savedNotes);
   }, []);
 
@@ -101,16 +96,27 @@ function BookmarkPage() {
             ) : (
               <div className="space-y-4">
                 {ayatBookmarks.map((bm) => (
-                  <div key={bm.id} className="border border-noor-divider/60 rounded-xl p-5 hover:border-noor-gold/40 transition-colors relative group">
-                    <Link to={`/surat/${bm.number}`} className="absolute inset-0 z-0"></Link>
+                  <div key={`${bm.surahNomor}-${bm.nomorAyat}`} className="border border-noor-divider/60 rounded-xl p-5 hover:border-noor-gold/40 transition-colors relative group">
                     <div className="flex items-center justify-between mb-3 relative z-10">
-                      <span className="text-sm font-bold text-noor-gold bg-noor-gold/10 px-3 py-1 rounded-full">
-                        {bm.surah} • Ayat {bm.verse}
-                      </span>
-                      <span className="text-xs text-noor-textSecondary font-medium">Ditambahkan: {bm.date}</span>
+                      <Link to={`/surat/${bm.surahNomor}`} className="text-sm font-bold text-noor-gold bg-noor-gold/10 hover:bg-noor-gold/20 px-3 py-1 rounded-full transition-colors flex items-center gap-1">
+                        <span>QS. {bm.surahName} • Ayat {bm.nomorAyat}</span>
+                      </Link>
+                      <button 
+                        onClick={() => toggleBookmarkVerse(bm)}
+                        className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        title="Hapus Bookmark"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
-                    <p className="font-arabic text-2xl text-right text-noor-dark leading-relaxed relative z-10">
-                      {bm.arabic}
+                    <p className="font-arabic text-2xl text-right text-noor-dark leading-[2.2] mb-3">
+                      {bm.teksArab}
+                    </p>
+                    <p className="text-left text-xs text-noor-gold font-medium italic mb-1.5">
+                      {bm.teksLatin}
+                    </p>
+                    <p className="text-left text-xs text-noor-textSecondary leading-relaxed border-t border-noor-divider/25 pt-2.5">
+                      {bm.teksIndonesia}
                     </p>
                   </div>
                 ))}
@@ -127,9 +133,31 @@ function BookmarkPage() {
             ) : (
               <div className="space-y-4">
                 {doaBookmarks.map((bm) => (
-                  <div key={bm.id} className="border border-noor-divider/60 rounded-xl p-5 hover:border-noor-gold/40 transition-colors">
-                    <h3 className="font-bold text-noor-dark mb-2">{bm.title}</h3>
-                    <p className="text-sm text-noor-textSecondary">{bm.translation}</p>
+                  <div key={bm.nomorAyat} className="border border-noor-divider/60 rounded-xl p-5 hover:border-noor-gold/40 transition-colors relative">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-extrabold text-noor-dark text-base">{bm.title}</h3>
+                      <button 
+                        onClick={() => toggleBookmarkVerse(bm)}
+                        className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                        title="Hapus Bookmark"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <p className="font-arabic text-2xl text-right text-noor-dark leading-[2.2] mb-3">
+                      {bm.arabic}
+                    </p>
+                    <p className="text-left text-xs text-noor-gold font-medium italic mb-1.5">
+                      "{bm.transliteration}"
+                    </p>
+                    <p className="text-left text-xs text-noor-textSecondary leading-relaxed mb-3 border-t border-noor-divider/25 pt-2.5">
+                      {bm.translation}
+                    </p>
+                    <div className="text-right">
+                      <span className="inline-block text-[9px] font-bold text-noor-textSecondary/70 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                        Sumber: {bm.reference}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

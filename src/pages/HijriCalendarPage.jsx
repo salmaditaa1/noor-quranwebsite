@@ -25,9 +25,14 @@ function HijriCalendarPage() {
       const day = parseInt(parts.find(p => p.type === 'day').value, 10);
       const month = parseInt(parts.find(p => p.type === 'month').value, 10);
       const year = parseInt(parts.find(p => p.type === 'year').value, 10);
+      
+      if (isNaN(day) || isNaN(month) || isNaN(year)) {
+        throw new Error("Invalid numeric Hijri date parts");
+      }
+      
       return { day, month, year };
     } catch (e) {
-      // Fallback rough approximation if not supported
+      // Fallback rough approximation if not supported or fails
       const epoch = 1948439.5;
       const j = Math.floor((date.getTime() / 86400000) + 2440587.5) - epoch;
       const y = Math.floor((30 * j + 10646) / 10631);
@@ -46,9 +51,11 @@ function HijriCalendarPage() {
     firstDayGregorian.setHours(12, 0, 0, 0); // Avoid timezone shifts
     
     let parts = getHijriParts(firstDayGregorian);
-    while (parts.month === targetParts.month && parts.day > 1) {
+    let guard = 0;
+    while (parts.month === targetParts.month && parts.day > 1 && guard < 40) {
       firstDayGregorian.setDate(firstDayGregorian.getDate() - 1);
       parts = getHijriParts(firstDayGregorian);
+      guard++;
     }
     // If we stepped out of the month, step forward once
     if (parts.month !== targetParts.month) {
@@ -95,7 +102,7 @@ function HijriCalendarPage() {
   };
 
   const goToToday = () => {
-    setCurrentDate(newDate());
+    setCurrentDate(new Date());
   };
 
   return (

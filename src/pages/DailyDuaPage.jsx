@@ -102,7 +102,15 @@ function DailyDuaPage() {
                   
                   <div className="flex items-center gap-2">
                     <button 
-                      onClick={() => toggleBookmarkVerse({ surahNomor: "dua", nomorAyat: dua.id, text: dua.title })}
+                      onClick={() => toggleBookmarkVerse({ 
+                        surahNomor: "dua", 
+                        nomorAyat: dua.id, 
+                        title: dua.title,
+                        arabic: dua.arabic,
+                        transliteration: dua.transliteration,
+                        translation: dua.translation,
+                        reference: dua.reference
+                      })}
                       className={`p-2 border rounded-lg transition-colors ${isVerseBookmarked("dua", dua.id) ? "bg-noor-gold/10 border-noor-gold text-noor-gold" : "bg-noor-card border-noor-divider/50 text-noor-textSecondary hover:text-noor-gold"}`} 
                       title="Bookmark"
                     >

@@ -11,6 +11,8 @@ function Favorit() {
   const { playSurahAudio, togglePlay, activeSurah, isPlaying } = useAudio();
   const [activeTab, setActiveTab] = useState("surah"); // surah, ayat
 
+  const ayatBookmarks = bookmarkedVerses.filter(item => item.surahNomor !== "dua");
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -63,7 +65,7 @@ function Favorit() {
           }`}
         >
           <Bookmark className="w-4 h-4" />
-          <span>Ayat Bookmark ({bookmarkedVerses.length})</span>
+          <span>Ayat Bookmark ({ayatBookmarks.length})</span>
         </button>
       </div>
 
@@ -71,18 +73,16 @@ function Favorit() {
       {activeTab === "surah" && (
         <div>
           {favorites.length === 0 ? (
-            <div className="text-center py-16 bg-noor-card border border-noor-divider rounded-noor shadow-noor-warm">
-              <Heart className="w-12 h-12 text-[#E8D8BF] mx-auto mb-3" />
-              <p className="text-noor-dark font-semibold text-sm">Belum ada surah favorit</p>
-              <p className="text-xs text-[#7A5845]/60 mt-1 max-w-xs mx-auto">
-                Tambahkan surah ke favorit dari daftar surah untuk mempermudah akses membaca harian Anda.
+            <div className="flex flex-col items-center justify-center py-20 bg-noor-card border border-noor-divider rounded-noor shadow-noor-warm col-span-full text-center px-4">
+              <div className="w-20 h-20 bg-noor-gold/10 rounded-full flex items-center justify-center mb-4">
+                <Heart className="w-10 h-10 text-noor-gold" />
+              </div>
+              <h3 className="text-xl font-bold text-noor-dark mb-2">Belum Ada Surah Favorit</h3>
+              <p className="text-[#7A5845]/70 text-sm max-w-sm mb-6 leading-relaxed">
+                Tandai surah yang sering Anda baca atau dengarkan dengan menekan ikon hati pada katalog surah.
               </p>
-              <Link
-                to="/quran"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-noor-light text-white rounded-xl text-xs font-bold mt-5 hover:bg-[#2C0F12] transition-colors shadow-sm"
-              >
-                <span>Buka Al-Qur'an</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link to="/quran" className="px-6 py-2.5 bg-noor-gold text-white font-bold rounded-xl hover:bg-[#967135] transition-all shadow-md flex items-center gap-2">
+                <BookOpen className="w-4 h-4" /> Buka Katalog Al-Qur'an
               </Link>
             </div>
           ) : (
@@ -114,7 +114,6 @@ function Favorit() {
                     </div>
 
                     <div className="flex gap-2">
-                      {/* Play Button */}
                       <button
                         onClick={() => {
                           if (isCurrentSurah) {
@@ -133,7 +132,6 @@ function Favorit() {
                         {playingThis && <span className="text-xs font-bold font-sans">Pause</span>}
                       </button>
 
-                      {/* Read Button */}
                       <Link
                         to={`/surat/${surah.nomor}`}
                         className="p-2.5 bg-noor-light hover:bg-[#2C0F12] text-[#F6EFE4] rounded-xl border border-noor-gold/10 flex items-center justify-center transition-all hover:scale-105"
@@ -141,7 +139,6 @@ function Favorit() {
                         <ExternalLink className="w-4 h-4" />
                       </Link>
 
-                      {/* Delete Favorite */}
                       <button
                         onClick={() => toggleFavoriteSurah(surah)}
                         className="p-2.5 bg-white border border-noor-divider/80 text-red-600 hover:bg-red-50 rounded-xl transition-all hover:scale-105"
@@ -161,19 +158,17 @@ function Favorit() {
       {/* TAB CONTENT: AYAT */}
       {activeTab === "ayat" && (
         <div>
-          {bookmarkedVerses.length === 0 ? (
-            <div className="text-center py-16 bg-noor-card border border-noor-divider rounded-noor shadow-noor-warm">
-              <Bookmark className="w-12 h-12 text-[#E8D8BF] mx-auto mb-3" />
-              <p className="text-noor-dark font-semibold text-sm">Belum ada ayat yang dibookmark</p>
-              <p className="text-xs text-[#7A5845]/60 mt-1 max-w-xs mx-auto">
-                Gunakan icon bookmark di samping setiap ayat ketika membaca Al-Qur'an untuk menyimpannya di sini.
+          {ayatBookmarks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 bg-noor-card border border-noor-divider rounded-noor shadow-noor-warm col-span-full text-center px-4">
+              <div className="w-20 h-20 bg-noor-gold/10 rounded-full flex items-center justify-center mb-4">
+                <Bookmark className="w-10 h-10 text-noor-gold" />
+              </div>
+              <h3 className="text-xl font-bold text-noor-dark mb-2">Belum Ada Ayat Ditandai</h3>
+              <p className="text-[#7A5845]/70 text-sm max-w-sm mb-6 leading-relaxed">
+                Tandai ayat terakhir yang Anda baca atau ayat yang ingin dihafal dengan menekan ikon pita pada halaman baca surah.
               </p>
-              <Link
-                to="/quran"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-noor-light text-white rounded-xl text-xs font-bold mt-5 hover:bg-[#2C0F12] transition-colors shadow-sm"
-              >
-                <span>Mulai Membaca</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link to="/quran" className="px-6 py-2.5 bg-noor-gold text-white font-bold rounded-xl hover:bg-[#967135] transition-all shadow-md flex items-center gap-2">
+                <BookOpen className="w-4 h-4" /> Mulai Membaca
               </Link>
             </div>
           ) : (
@@ -183,7 +178,7 @@ function Favorit() {
               animate="show"
               className="space-y-4"
             >
-              {bookmarkedVerses.map((item) => (
+              {ayatBookmarks.map((item) => (
                 <motion.div
                   key={`${item.surahNomor}-${item.nomorAyat}`}
                   variants={itemVariants}

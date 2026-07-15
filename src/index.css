@@ -119,3 +119,66 @@
   line-height: 1.8;
   font-size: 1.05rem;
 }
+
+/* Islamic Decorative System (Gold Accents, 3-5% Opacity) */
+.islamic-star-gold {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B58A44' stroke-width='2'%3E%3Cpath d='M50 5 L63 37 L95 50 L63 63 L50 95 L37 63 L5 50 L37 37 Z' /%3E%3Cpath d='M50 15 L59 41 L85 50 L59 59 L50 85 L41 59 L15 50 L41 41 Z' /%3E%3Ccircle cx='50' cy='50' r='4' fill='%23B58A44' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.islamic-corner-ornament {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  opacity: 0.04; /* 4% opacity */
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23B58A44' stroke-width='3.5'%3E%3Cpath d='M0 0 L100 0 L100 20 L40 20 A20 20 0 0 0 20 40 L20 100 L0 100 Z' /%3E%3Cpath d='M10 10 L80 10 L80 20 M20 20 L20 80 L10 80' /%3E%3Ccircle cx='50' cy='50' r='6' stroke-width='2' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 1;
+}
+
+.islamic-corner-tl {
+  top: 6px;
+  left: 6px;
+}
+.islamic-corner-tr {
+  top: 6px;
+  right: 6px;
+  transform: rotate(90deg);
+}
+.islamic-corner-br {
+  bottom: 6px;
+  right: 6px;
+  transform: rotate(180deg);
+}
+.islamic-corner-bl {
+  bottom: 6px;
+  left: 6px;
+  transform: rotate(270deg);
+}
+
+.islamic-divider-gold {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  margin: 20px 0;
+  opacity: 0.06; /* 6% opacity */
+}
+.islamic-divider-gold::before,
+.islamic-divider-gold::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-noor-gold);
+}
+.islamic-divider-gold-star {
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23B58A44'%3E%3Cpath d='M50 0 L63 37 L100 50 L63 63 L50 100 L37 63 L0 50 L37 37 Z' /%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}

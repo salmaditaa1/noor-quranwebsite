@@ -72,8 +72,10 @@ function Navbar() {
 
             return (
               <Link key={item.path} to={item.path} className="relative block">
-                <div
-                  className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-noor transition-all duration-300 ${
+                <motion.div
+                  whileHover={{ scale: 1.02, x: 2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-noor transition-all duration-300 cursor-pointer ${
                     active
                       ? "text-noor-dark font-semibold"
                       : "text-[#E8D8BF]/75 hover:text-white hover:bg-white/5"
@@ -90,7 +92,7 @@ function Navbar() {
                   
                   <Icon className={`w-4.5 h-4.5 transition-transform duration-300 ${active ? "scale-110" : ""}`} />
                   <span className="text-xs tracking-wide">{item.label}</span>
-                </div>
+                </motion.div>
               </Link>
             );
           })}
@@ -114,7 +116,11 @@ function Navbar() {
 
           return (
             <Link key={item.path} to={item.path} className="relative py-1 flex flex-col items-center justify-center flex-1">
-              <div className={`p-1.5 rounded-full relative flex items-center justify-center ${active ? "text-noor-light" : "text-[#7A5845]/70"}`}>
+              <motion.div 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`p-1.5 rounded-full relative flex items-center justify-center cursor-pointer ${active ? "text-noor-light" : "text-[#7A5845]/70"}`}
+              >
                 {active && (
                   <motion.div
                     layoutId="activeNavMobile"
@@ -123,7 +129,7 @@ function Navbar() {
                   />
                 )}
                 <Icon className={`w-5 h-5 ${active ? "scale-110 stroke-[2.5px]" : "stroke-2"}`} />
-              </div>
+              </motion.div>
               <span className={`text-[9px] tracking-wide mt-0.5 ${active ? "text-noor-light font-bold" : "text-[#7A5845]/60 font-medium"}`}>
                 {item.label}
               </span>

@@ -64,6 +64,24 @@
   },
   {
     "id": "dua-8",
+    "category": "Rumah",
+    "title": "Doa Keluar Rumah",
+    "arabic": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+    "transliteration": "Bismillahi tawakkaltu 'alallah la hawla wala quwwata illa billah.",
+    "translation": "Dengan nama Allah, aku berserah diri kepada Allah, tiada daya dan kekuatan melainkan dengan pertolongan Allah.",
+    "reference": "HR. Abu Dawud & Tirmidzi"
+  },
+  {
+    "id": "dua-9",
+    "category": "Rumah",
+    "title": "Doa Masuk Rumah",
+    "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+    "transliteration": "Bismillahi walajnaa, wa bismillahi kharajnaa, wa 'alallahi rabbina tawakkalnaa.",
+    "translation": "Dengan nama Allah kami masuk, dan dengan nama Allah kami keluar, dan kepada Allah Tuhan kami, kami berserah diri.",
+    "reference": "HR. Abu Dawud"
+  },
+  {
+    "id": "dua-10",
     "category": "Perjalanan",
     "title": "Doa Naik Kendaraan",
     "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
@@ -72,7 +90,7 @@
     "reference": "QS. Az-Zukhruf: 13-14"
   },
   {
-    "id": "dua-9",
+    "id": "dua-11",
     "category": "Kesehatan",
     "title": "Doa Menjenguk Orang Sakit",
     "arabic": "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ",
@@ -81,12 +99,84 @@
     "reference": "HR. Bukhari"
   },
   {
-    "id": "dua-10",
+    "id": "dua-12",
     "category": "Orang Tua",
     "title": "Doa Untuk Kedua Orang Tua",
     "arabic": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
     "transliteration": "Rabbighfir li wa liwalidayya warhamhuma kama rabbayani shaghira.",
     "translation": "Ya Tuhanku, ampunilah aku dan kedua orang tuaku, dan sayangilah mereka sebagaimana mereka menyayangiku di waktu kecil.",
     "reference": "Al-Qur'an & Sunnah"
+  },
+  {
+    "id": "dua-13",
+    "category": "Belajar",
+    "title": "Doa Sebelum Belajar",
+    "arabic": "رَبِّ زِدْنِي عِلْمًا وَارْزُقْنِي فَهْمًا",
+    "transliteration": "Rabbi zidnii 'ilman warzuqnii fahman.",
+    "translation": "Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan dan berilah aku karunia untuk memahaminya.",
+    "reference": "QS. Thaha: 114"
+  },
+  {
+    "id": "dua-14",
+    "category": "Urusan",
+    "title": "Doa Kemudahan Urusan",
+    "arabic": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",
+    "transliteration": "Allahumma la sahla illa ma ja'altahu sahla, wa anta taj'alul hazna idza syi'ta sahla.",
+    "translation": "Ya Allah, tidak ada kemudahan kecuali apa yang Engkau jadikan mudah, dan Engkau dapat menjadikan kesedihan (kesulitan) menjadi mudah jika Engkau menghendaki.",
+    "reference": "HR. Ibnu Hibban"
+  },
+  {
+    "id": "dua-15",
+    "category": "Urusan",
+    "title": "Doa Kelapangan Dada",
+    "arabic": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي",
+    "transliteration": "Rabbisyrah lii shadrii wa yassir lii amrii wahlul 'uqdatan min lisaanii yafqahuu qaulii.",
+    "translation": "Ya Tuhanku, lapangkanlah dadaku, dan mudahkanlah untukku urusanku, dan lepaskanlah kekakuan dari lidahku agar mereka mengerti perkataanku.",
+    "reference": "QS. Thaha: 25-28"
+  },
+  {
+    "id": "dua-16",
+    "category": "Kebaikan",
+    "title": "Doa Sapujagat (Kebaikan Dunia Akhirat)",
+    "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbana aatina fid-dunya hasanatah wa fil-akhirati hasanatah wa qina 'adhaban-nar.",
+    "translation": "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari siksa neraka.",
+    "reference": "QS. Al-Baqarah: 201"
+  },
+  {
+    "id": "dua-17",
+    "category": "Keteguhan",
+    "title": "Doa Ketetapan Hati",
+    "arabic": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+    "transliteration": "Ya muqallibal quluub tsabbit qalbii 'ala diinik.",
+    "translation": "Wahai Dzat yang membolak-balikkan hati, tetapkanlah hatiku di atas agama-Mu.",
+    "reference": "HR. Tirmidzi"
+  },
+  {
+    "id": "dua-18",
+    "category": "Perlindungan",
+    "title": "Doa Perlindungan dari Malas & Pikun",
+    "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ وَالْجُبْنِ وَالْهَرَمِ وَالْبُخْلِ",
+    "transliteration": "Allahumma inni a'udzu bika minal 'ajzi wal kasali wal jubni wal harami wal bukhl.",
+    "translation": "Ya Allah, aku berlindung kepada-Mu dari kelemahan, kemalasan, sifat pengecut, pikun, dan kekikiran.",
+    "reference": "HR. Bukhari & Muslim"
+  },
+  {
+    "id": "dua-19",
+    "category": "Majelis",
+    "title": "Doa Kafaratul Majelis (Penutup Majelis)",
+    "arabic": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ",
+    "transliteration": "Subhanaka Allahumma wa bihamdika, asyhadu an la ilaha illa anta, astaghfiruka wa atuubu ilaik.",
+    "translation": "Maha Suci Engkau, ya Allah, dengan memuji-Mu. Aku bersaksi bahwa tiada tuhan yang berhak disembah selain Engkau. Aku memohon ampunan-Mu dan bertobat kepada-Mu.",
+    "reference": "HR. Abu Dawud & Tirmidzi"
+  },
+  {
+    "id": "dua-20",
+    "category": "Perlindungan",
+    "title": "Doa Perlindungan dari Kejahatan Makhluk",
+    "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    "transliteration": "A'udzu bikalimatillahit taammati min syarri ma khalaq.",
+    "translation": "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan makhluk yang diciptakan-Nya.",
+    "reference": "HR. Muslim"
   }
 ]

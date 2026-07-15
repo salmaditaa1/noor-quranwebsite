@@ -94,18 +94,6 @@ function QiblaPage() {
 
   if (geoLoading) return <Loader label="Mendapatkan Lokasi..." />;
 
-  if (geoError) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6">
-        <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
-        <h2 className="text-xl font-bold text-noor-dark">Lokasi Tidak Ditemukan</h2>
-        <p className="text-sm text-noor-textSecondary mt-2">
-          Pastikan Anda mengizinkan akses lokasi pada browser untuk menggunakan fitur Kiblat.
-        </p>
-      </div>
-    );
-  }
-
   // Calculate the rotation of the Kaaba pointer
   // The compass dial rotates opposite to the phone's heading, so North is always "up" on the screen relative to the real world.
   // The Kaaba pointer points at (Qibla Bearing - Heading) degrees relative to the top of the screen.
@@ -128,6 +116,13 @@ function QiblaPage() {
           <p className="text-sm text-noor-textSecondary font-medium">Arahkan perangkat Anda untuk menemukan Kiblat</p>
         </div>
       </div>
+
+      {geoError && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4 mb-6 text-xs font-semibold flex items-center gap-2 shadow-sm">
+          <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+          <span>Menggunakan lokasi default (Jakarta) karena akses GPS ditolak atau tidak aktif. Anda tetap dapat menggunakan Kompas secara manual.</span>
+        </div>
+      )}
 
       {!permissionGranted && isSupported && (
         <div className="bg-white border border-noor-divider rounded-xl p-6 text-center shadow-noor-warm mb-8">
