@@ -15,9 +15,9 @@ export function AuthProvider({ children }) {
     }
     return {
       id: "guest",
-      name: "Tamu Noor",
-      email: "tamu@noor.id",
-      city: "JAKARTA",
+      name: "",
+      email: "",
+      city: "",
       photo: null,
       isGuest: true
     };
@@ -67,9 +67,9 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser({
       id: "guest",
-      name: "Tamu Noor",
-      email: "tamu@noor.id",
-      city: "JAKARTA",
+      name: "",
+      email: "",
+      city: "",
       photo: null,
       isGuest: true
     });

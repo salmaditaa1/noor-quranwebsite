@@ -13,7 +13,6 @@ const DAYS_OF_WEEK = ["Ahad", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sab
 function HijriCalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Function to convert Gregorian date to Hijri parts using Intl
   const getHijriParts = (date) => {
     try {
       const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
@@ -22,24 +21,31 @@ function HijriCalendarPage() {
         year: 'numeric'
       });
       const parts = formatter.formatToParts(date);
-      const day = parseInt(parts.find(p => p.type === 'day').value, 10);
-      const month = parseInt(parts.find(p => p.type === 'month').value, 10);
-      const year = parseInt(parts.find(p => p.type === 'year').value, 10);
-      
-      if (isNaN(day) || isNaN(month) || isNaN(year)) {
-        throw new Error("Invalid numeric Hijri date parts");
+      const day = parseInt(parts.find(p => p.type === 'day')?.value, 10);
+      const month = parseInt(parts.find(p => p.type === 'month')?.value, 10);
+      const year = parseInt(parts.find(p => p.type === 'year')?.value, 10);
+
+      if (!Number.isNaN(day) && !Number.isNaN(month) && !Number.isNaN(year)) {
+        return { day, month, year };
       }
-      
-      return { day, month, year };
     } catch (e) {
-      // Fallback rough approximation if not supported or fails
-      const epoch = 1948439.5;
-      const j = Math.floor((date.getTime() / 86400000) + 2440587.5) - epoch;
-      const y = Math.floor((30 * j + 10646) / 10631);
-      const m = Math.min(12, Math.ceil((j - (29 + y) - Math.floor((y * 327) / 900)) / 29.5) + 1);
-      const d = (j - Math.floor((29.5001 * (m - 1)) + 0.99)) - Math.floor((y * 10631) / 30);
-      return { day: Math.max(1, d), month: Math.max(1, m), year: y };
+      // Ignore and use fallback below
     }
+
+    const jd = Math.floor((date.getTime() - Date.UTC(1940, 1, 1)) / 86400000) + 2449709;
+    const l = jd - 1948440 + 10632;
+    const n = Math.floor((l - 1) / 10631);
+    const l2 = l - 10631 * n + 354;
+    const j1 = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor((l2 - 1) / 5670) * Math.floor((43 * l2) / 15238);
+    const month = Math.floor((30 * l2 + 15) / 10646);
+    const day = Math.floor((30 * l2 + 15) / 10646) === 0 ? 1 : Math.floor((l2 - j1) / 29.5) + 1;
+    const year = 30 * n + j1;
+
+    return {
+      day: Math.max(1, Math.min(30, day)),
+      month: Math.max(1, Math.min(12, month)),
+      year: Math.max(1, year)
+    };
   };
 
   const generateMonthData = useMemo(() => {

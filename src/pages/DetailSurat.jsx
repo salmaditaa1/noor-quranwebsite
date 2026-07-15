@@ -76,6 +76,9 @@ function DetailSurat() {
     const fetchDetail = async () => {
       setLoading(true);
       setError(null);
+      setDetail(null);
+      setActiveTafsirVerse(null);
+      setShowTafsirDrawer(false);
       try {
         const res = await axios.get(`https://equran.id/api/v2/surat/${nomor}`);
         if (active && res.data?.data) {

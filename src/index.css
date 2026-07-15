@@ -37,7 +37,12 @@
   }
 
   body {
-    @apply bg-noor-bg text-noor-dark font-sans;
+    @apply bg-noor-bg text-noor-dark font-sans antialiased;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 }
 
@@ -118,6 +123,21 @@
 .translation-text {
   line-height: 1.8;
   font-size: 1.05rem;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide {
+  animation: fadeSlideUp 250ms ease-out;
 }
 
 /* Islamic Decorative System (Gold Accents, 3-5% Opacity) */

@@ -44,11 +44,11 @@ function ProfilePage() {
     const toastId = toast.loading("Menghubungkan dengan akun Google...");
     setTimeout(() => {
       updateProfile({
-        name: "Ahmad Fajar",
-        email: "ahmad.fajar@gmail.com",
+        name: user?.name || "",
+        email: user?.email || "",
         isGuest: false,
-        city: user?.city || "Jakarta",
-        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
+        city: user?.city || "",
+        photo: user?.photo || null
       });
       setIsSyncing(false);
       toast.success("Akun berhasil disinkronisasi dengan Google!", { id: toastId });
@@ -58,10 +58,10 @@ function ProfilePage() {
   const handleDisconnectSync = () => {
     if (window.confirm("Apakah Anda yakin ingin memutuskan sinkronisasi? Data Anda akan tetap disimpan secara lokal.")) {
       updateProfile({
-        name: "Tamu Noor",
-        email: "tamu@noor.id",
+        name: "",
+        email: "",
         isGuest: true,
-        city: user?.city || "Jakarta",
+        city: user?.city || "",
         photo: null
       });
       toast.success("Koneksi Google diputuskan.");
@@ -146,15 +146,15 @@ function ProfilePage() {
           ) : (
             <>
               <div className="flex flex-col md:flex-row items-center justify-between">
-                <div>
+                <div className="w-full">
                   <h2 className="text-2xl md:text-3xl font-extrabold tracking-wide font-sans mb-1">
-                    {user?.name}
+                    {user?.name || "Belum Login"}
                   </h2>
                   <p className="text-[#E8D8BF]/80 text-sm font-medium mb-1">
-                    {user?.email} • {user?.city}
+                    {user?.email ? `${user.email} • ${user.city || ""}` : "Masuk untuk menyimpan Bookmark & Progress"}
                   </p>
                   <p className="text-[#E8D8BF]/60 text-xs font-medium mb-3">
-                    Bergabung sejak {new Date(user?.id || Date.now()).toLocaleDateString("id-ID")}
+                    {user?.email ? `Bergabung sejak ${new Date(user?.id || Date.now()).toLocaleDateString("id-ID")}` : "Profil lokal hanya untuk pengalaman cepat tanpa login."}
                   </p>
                 </div>
                 <button 

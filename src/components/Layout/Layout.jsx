@@ -49,14 +49,14 @@ const MihrabBackdrop = () => (
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen islamic-pattern flex flex-col md:flex-row relative overflow-x-hidden bg-[#DABE9E] selection:bg-noor-gold/30">
+    <div className="min-h-screen islamic-pattern flex flex-col md:flex-row relative overflow-x-hidden bg-[#DABE9E] selection:bg-noor-gold/30 isolate">
       <TopLeftOrnament />
       <BottomRightOrnament />
       <MihrabBackdrop />
 
       <Navbar />
 
-      <main className="flex-1 md:ml-[285px] min-h-screen p-4 md:p-8 overflow-y-auto z-10 flex flex-col justify-between">
+      <main className="flex-1 md:ml-[285px] min-h-screen p-3 sm:p-4 md:p-8 overflow-x-hidden overflow-y-auto overscroll-contain z-10 flex flex-col justify-between min-w-0">
         <div className="w-full">
           {children}
         </div>
