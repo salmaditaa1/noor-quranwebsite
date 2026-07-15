@@ -112,7 +112,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Daily Verse + Launcher Panel */}
-        <div className="md:col-span-2 bg-gradient-to-br from-noor-dark to-noor-light text-[#F6EFE4] rounded-noor p-5 border border-noor-gold/25 shadow-noor-heavy flex flex-col justify-between relative overflow-hidden">
+        <div className="md:col-span-2 bg-gradient-to-br from-noor-dark to-noor-light text-[#F6EFE4] rounded-noor p-5 border border-noor-gold/25 shadow-noor-heavy flex flex-col justify-between relative overflow-hidden min-w-0">
           <div className="islamic-corner-ornament islamic-corner-tl"></div>
           <div className="islamic-corner-ornament islamic-corner-tr"></div>
           {/* Subtle star motif overlay */}
@@ -161,7 +161,7 @@ function Dashboard() {
         </div>
 
         {/* Continue Reading (Last Read) Card */}
-        <div className="bg-noor-card border border-noor-divider shadow-noor-warm rounded-noor p-5 flex flex-col justify-between">
+        <div className="bg-noor-card border border-noor-divider shadow-noor-warm rounded-noor p-5 flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between pb-3 border-b border-noor-divider/60">
             <h3 className="font-bold text-noor-dark flex items-center gap-2 text-sm md:text-base">
               <BookMarked className="w-5 h-5 text-noor-gold" />
@@ -224,10 +224,10 @@ function Dashboard() {
 
       {/* Row 2: 3-Column Core Widgets */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div>
+        <div className="min-w-0">
           <PrayerPanel />
         </div>
-        <div className="h-[430px] md:h-auto overflow-y-auto scrollbar-thin">
+        <div className="h-[430px] md:h-auto overflow-y-auto scrollbar-thin min-w-0">
           <TasbihPanel />
         </div>
         <div>
@@ -239,12 +239,12 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Reflection Mode panel */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 min-w-0">
           <ReflectionPanel />
         </div>
 
         {/* Recent Activities & Popular Surahs Container */}
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           
           {/* Recent Activity Timeline */}
           <div className="bg-noor-card border border-noor-divider shadow-noor-warm rounded-noor p-5">

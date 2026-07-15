@@ -36,13 +36,24 @@
     --color-noor-divider: #3D3529;
   }
 
+  html, body, #root {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-noor-bg text-noor-dark font-sans antialiased;
-    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
   }
 
   * {
     box-sizing: border-box;
+  }
+
+  img, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
 }
 
